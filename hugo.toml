@@ -1,0 +1,49 @@
+baseURL = 'https://juicebar-demo.add1.dev/'
+languageCode = 'en'
+# languageCode = 'zh-CN'
+title = "ZhugeZ"
+
+[params]
+author = "zhugez"
+description = "My site description"
+authorImage = "/images/profile.jpg"
+paginate = 5
+
+Title = "ZhugeZ"
+content = "I'm ZhugeZ, nice to meet you(ˊ˘ˋ*)♡"
+imageUrl = "/images/avatar.jpg"
+# To add a new social icon (More social icons can be found in JuiceBar\layouts\partials\svg.html.)
+[[params.social]]
+name = "Github"
+url = "https://github.com/zhugez"
+[[params.social]]
+name = "telegram"
+url = "https://t.me/Dezzhu"
+[[params.social]]
+name = "twitter"
+url = "https://twitter.com/Dezzhu1"
+[[params.social]]
+name = "email"
+url = "mailto:imjiaying@outlook.com"
+
+[taxonomies]
+category = "categories"
+
+# To add a new navigation link
+[[menu.main]]
+name = "About"
+url = "/about"
+[[menu.main]]
+name = "Blog"
+url = "/post"
+[[menu.main]]
+name = "Categories"
+url = "/categories"
+
+
+# Used for outputting the documentation (required).
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+
+
+
