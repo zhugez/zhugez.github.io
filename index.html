@@ -453,7 +453,7 @@ class Component extends DCLogic {
     const sfx = this._sfx;
     if(sfx){
       sfx.volume = 0.7;
-      const tryPlay = ()=>{ try{ sfx.currentTime = 0; return sfx.play(); }catch(e){ return Promise.reject(e); } };
+      const tryPlay = ()=>{ try{ sfx.currentTime = 0; const pr = sfx.play(); clearTimeout(this._sfxStop); this._sfxStop = setTimeout(()=>{ try{ sfx.pause(); }catch(e){} }, 2000); return pr; }catch(e){ return Promise.reject(e); } };
       const armOnce = ()=>{
         const h = ()=>{ tryPlay().catch(()=>{}); window.removeEventListener('pointerdown', h); window.removeEventListener('keydown', h); };
         window.addEventListener('pointerdown', h, {once:true}); window.addEventListener('keydown', h, {once:true});
@@ -477,7 +477,7 @@ class Component extends DCLogic {
     // safety: never trap the user behind the loader
     this._loadFail = setTimeout(()=>{ if(lo && lo.style.display!=='none'){ lo.style.display='none'; finish(); } }, 5000);
   }
-  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearTimeout(this._sfxStop); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
   _makeSprite(rgb){
     const s = 64, cv = document.createElement('canvas'); cv.width=cv.height=s;
