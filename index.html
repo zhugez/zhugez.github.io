@@ -25,6 +25,8 @@
   @keyframes pf-twinkle{0%,100%{transform:scale(1) rotate(0deg);opacity:.7;}50%{transform:scale(1.3) rotate(90deg);opacity:1;}}
   @keyframes pf-dots{0%,100%{opacity:.3;}50%{opacity:1;}}
   @keyframes pf-bob{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-11px) rotate(-2deg);}}
+  @keyframes pf-aurora{0%{transform:translate(-10%,-10%) scale(1);}33%{transform:translate(12%,6%) scale(1.25);}66%{transform:translate(-6%,12%) scale(1.1);}100%{transform:translate(-10%,-10%) scale(1);}}
+  @keyframes pf-aurora2{0%{transform:translate(20%,10%) scale(1.1);}50%{transform:translate(-12%,-8%) scale(1.3);}100%{transform:translate(20%,10%) scale(1.1);}}
   @keyframes pf-haloSpin{to{transform:rotate(360deg);}}
   .soc{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;}
   .soc .soc-ic{transition:transform .22s ease;}
@@ -44,6 +46,7 @@
   @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;}}
 </style>
 <script src="./image-slot.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 <script src="./works.js"></script>
 </helmet>
@@ -63,7 +66,9 @@
         <div style="position:relative;height:96px;overflow:hidden;background:linear-gradient(135deg,#1a1340,#13213f);">
           <img src="media/banner.gif" alt="banner" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 56%;display:block;">
         </div>
-        <div style="padding:0 16px 16px;">
+        <div style="padding:0 16px 16px;position:relative;">
+          <div style="position:absolute;width:150px;height:150px;right:-30px;bottom:-30px;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 65%);opacity:.14;filter:blur(16px);animation:pf-aurora 12s ease-in-out infinite;pointer-events:none;"></div>
+          <div style="position:absolute;width:120px;height:120px;left:-20px;bottom:20px;border-radius:50%;background:radial-gradient(circle,var(--accent2),transparent 65%);opacity:.10;filter:blur(16px);animation:pf-aurora2 14s ease-in-out infinite;pointer-events:none;"></div>
           <div style="display:flex;align-items:flex-end;gap:12px;margin-top:-34px;">
             <div style="position:relative;flex:none;">
               <div style="{{ ringStyle }}">
@@ -146,6 +151,33 @@
         </div>
       </div>
 
+      <!-- vibe / vinyl -->
+      <div style="position:relative;overflow:hidden;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;">
+        <div style="position:absolute;width:160px;height:160px;left:-30px;bottom:-50px;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 65%);opacity:.22;filter:blur(14px);animation:pf-aurora 11s ease-in-out infinite;pointer-events:none;"></div>
+        <div style="position:absolute;width:150px;height:150px;right:-30px;top:-40px;border-radius:50%;background:radial-gradient(circle,var(--accent2),transparent 65%);opacity:.18;filter:blur(14px);animation:pf-aurora2 13s ease-in-out infinite;pointer-events:none;"></div>
+        <div style="position:relative;display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">vibe</span></div>
+        <div style="position:relative;display:flex;align-items:center;gap:15px;">
+          <div style="flex:none;width:74px;height:74px;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,#15151c 0,#15151c 2px,#0c0c12 2px,#0c0c12 4px);box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;animation:pf-spin 4s linear infinite;">
+            <div style="width:30px;height:30px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px var(--accent-soft,transparent);">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--card);"></div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;color:var(--t1);font-weight:600;">{{ vibeWord }}</div>
+            <div style="font-size:12px;color:var(--t2);margin-top:2px;">{{ vibeSub }}</div>
+            <div style="display:flex;align-items:flex-end;gap:3px;height:16px;margin-top:9px;">
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .15s;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .3s;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .45s;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .6s;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .75s;"></span>
+              <span style="flex:1;background:linear-gradient(var(--accent2),var(--accent));border-radius:2px;transform-origin:bottom;animation:pf-eq 1.1s ease-in-out infinite .9s;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ============ RIGHT COLUMN ============ -->
@@ -197,19 +229,53 @@
         </div>
       </div>
 
-      <!-- now playing (spotify) -->
-      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
-          <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">now playing</span></div>
+      <!-- now playing (custom player) -->
+      <div style="position:relative;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">{{ nowLabel }}</span></div>
           <div style="display:flex;align-items:flex-end;gap:3px;height:14px;">
-            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite;"></span>
-            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .3s;"></span>
-            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .6s;"></span>
+            <span style="width:3px;height:100%;background:var(--accent);border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite;"></span>
+            <span style="width:3px;height:100%;background:var(--accent2);border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .3s;"></span>
+            <span style="width:3px;height:100%;background:var(--accent);border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .6s;"></span>
           </div>
         </div>
-        <div style="border-radius:12px;overflow:hidden;background:#0a0f1f;">
-          <iframe ref="{{ spotifyRef }}" title="Spotify playlist" style="width:100%;height:152px;border:0;display:block;" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
+
+        <div ref="{{ ytRef }}" style="position:absolute;width:1px;height:1px;left:-9999px;top:0;opacity:0;pointer-events:none;"></div>
+
+        <sc-if value="{{ usingSpotify }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,var(--panel),#0a0f1f);border:1px solid var(--bd);box-shadow:0 0 0 1px var(--accent-ring,transparent),0 8px 22px rgba(0,0,0,.35),0 0 22px var(--accent-soft,transparent);">
+            <div style="height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));"></div>
+            <div style="padding:8px 8px 0;">
+              <iframe ref="{{ spotifyRef }}" title="Spotify playlist" style="width:100%;height:152px;border:0;display:block;border-radius:10px;" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px 10px;">
+              <span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);"></span>streaming on spotify</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent2);">lofi · ambient</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ usingYouTube }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:15px;">
+            <div style="position:relative;flex:none;width:62px;height:62px;">
+              <div ref="{{ coverRef }}" style="width:100%;height:100%;border-radius:50%;background-color:#0c0c12;background-size:cover;background-position:center;box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 3px rgba(0,0,0,.4),0 0 0 4px var(--accent-ring,transparent);animation:pf-spin 8s linear infinite;{{ coverAnim }}"></div>
+              <div style="position:absolute;left:50%;top:50%;width:14px;height:14px;border-radius:50%;background:var(--card);transform:translate(-50%,-50%);box-shadow:inset 0 0 0 2px var(--accent);"></div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:15px;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ trackTitle }}</div>
+              <div style="font-size:12.5px;color:var(--t2);margin-top:1px;">via YouTube · lofi</div>
+            </div>
+            <button type="button" class="play-btn" onClick="{{ onToggle }}" aria-label="Play or pause" style="flex:none;width:48px;height:48px;border:none;cursor:pointer;border-radius:50%;background:linear-gradient(150deg,var(--accent),var(--accent2));color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--accent-soft,rgba(122,162,255,.4));transition:transform .15s;" style-hover="transform:scale(1.08);">{{ playIcon }}</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:15px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);min-width:32px;">{{ curLabel }}</span>
+            <div onClick="{{ onSeek }}" style="flex:1;height:6px;border-radius:99px;background:rgba(130,150,210,.18);overflow:hidden;cursor:pointer;">
+              <div style="{{ progFillStyle }}"></div>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);min-width:32px;text-align:right;">{{ durLabel }}</span>
+            <button type="button" onClick="{{ onMute }}" aria-label="Mute" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;padding:0;line-height:1;">{{ muteIcon }}</button>
+          </div>
+        </sc-if>
       </div>
 
       <!-- recent works -->
@@ -221,10 +287,8 @@
         <div ref="{{ worksGridRef }}" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
           <sc-for list="{{ works }}" as="w">
             <div class="work-cell" onDoubleClick="{{ w.open }}" title="double-click to enlarge" style="position:relative;height:104px;border-radius:11px;overflow:hidden;cursor:zoom-in;border:1px solid var(--bd);">
-              <sc-if value="{{ w.src }}" hint-placeholder-val="{{ false }}">
-              <img src="{{ w.src }}" alt="work" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.82);">
-              <img data-color="1" src="{{ w.src }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);">
-              </sc-if>
+              <img ref="{{ imgSrcRef }}" data-src="{{ w.src }}" alt="work" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.82);">
+              <img data-color="1" ref="{{ imgSrcRef }}" data-src="{{ w.src }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);">
               <span style="position:absolute;top:6px;right:6px;font-size:11px;color:#fff;background:rgba(10,15,31,.6);border-radius:6px;padding:2px 5px;line-height:1;pointer-events:none;">⤢</span>
               <div class="work-cap" style="position:absolute;left:0;right:0;bottom:0;padding:14px 9px 7px;background:linear-gradient(transparent,rgba(20,10,40,.92));pointer-events:none;">
                 <div style="font-size:11.5px;color:#fff;font-weight:600;line-height:1.2;">{{ w.title }}</div>
@@ -286,14 +350,24 @@
 
   <sc-if value="{{ modalSrc }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(4,6,15,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:28px;cursor:zoom-out;">
-      <img src="{{ modalSrc }}" alt="artwork" style="max-width:90vw;max-height:86vh;border-radius:16px;border:1px solid rgba(167,139,250,.45);box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px rgba(167,139,250,.3);">
+      <img ref="{{ imgSrcRef }}" data-src="{{ modalSrc }}" alt="artwork" style="max-width:90vw;max-height:86vh;border-radius:16px;border:1px solid rgba(167,139,250,.45);box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px rgba(167,139,250,.3);">
     </div>
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;drawing something soft&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spotify&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;37i9dQZF1DWWQRwui0ExPn&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;drawing something soft&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;music&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;eCkMQraVsUA&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, typed:'' };
+  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, typed:'', vibeIdx:0, trackTitle:'loading track…' };
+  _vibe(){
+    const v = [
+      ['cozy & creative','late-night drawing'],
+      ['in the zone','headphones on'],
+      ['dreamy mood','soft neon haze'],
+      ['caffeinated','third coffee today'],
+      ['feeling inspired','sketchbook open']
+    ];
+    return v[(this.state.vibeIdx||0)%v.length];
+  }
   _startTyping(){
     const phrases = [
       this.props.statusText ?? 'drawing something soft',
@@ -354,8 +428,9 @@ class Component extends DCLogic {
     };
     run();
     this._startTyping();
+    this._vibeT = setInterval(()=>this.setState(s=>({vibeIdx:(s.vibeIdx+1)%5})), 3800);
   }
-  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
   _makeSprite(rgb){
     const s = 64, cv = document.createElement('canvas'); cv.width=cv.height=s;
@@ -449,31 +524,41 @@ class Component extends DCLogic {
     return { t: hh+':'+mm, d: days[d.getDay()]+' '+mon[d.getMonth()]+' '+d.getDate() };
   }
   _initYT(){
+    if (this._usingSpotify) return;
     if (this._player || !this._ytEl || !(window.YT && window.YT.Player)) return;
+    this._loadedId = this._videoId || 'eCkMQraVsUA';
     this._player = new window.YT.Player(this._ytEl, {
-      videoId: this.VIDEO_ID,
+      videoId: this._loadedId,
       playerVars: { controls:0, disablekb:1, modestbranding:1, rel:0, playsinline:1, fs:0 },
       events: {
         onReady: (e)=>{
-          let saved=0; try{ saved=parseFloat(localStorage.getItem(this.POS_KEY))||0; }catch(err){}
+          let saved=0; try{ saved=parseFloat(localStorage.getItem(this.POS_KEY+this._loadedId))||0; }catch(err){}
           const dur = e.target.getDuration() || 0;
           if (saved>0 && saved<dur) { e.target.seekTo(saved, true); e.target.pauseVideo(); }
-          this.setState({ dur: dur, cur: saved||0 });
+          let title=''; try{ title=(e.target.getVideoData()||{}).title||''; }catch(err){}
+          this.setState({ dur: dur, cur: saved||0, trackTitle: title });
           this._poll = setInterval(()=>{
             if (!this._player || !this._player.getCurrentTime) return;
             const c = this._player.getCurrentTime() || 0;
             this.setState({ cur: c, dur: this._player.getDuration() || this.state.dur });
-            try{ localStorage.setItem(this.POS_KEY, String(Math.floor(c))); }catch(err){}
+            try{ localStorage.setItem(this.POS_KEY+this._loadedId, String(Math.floor(c))); }catch(err){}
           }, 500);
         },
         onStateChange: (e)=>{
           const st = e.data;
-          if (st===1) this.setState({playing:true});
+          if (st===1){ let title=''; try{ title=(this._player.getVideoData()||{}).title||''; }catch(err){} this.setState({playing:true, trackTitle: title||this.state.trackTitle}); }
           else if (st===2 || st===0) this.setState({playing:false});
           if (st===0 && this._player) { this._player.seekTo(0, true); this._player.playVideo(); }
         }
       }
     });
+  }
+  _syncVideo(){
+    if (this._usingSpotify || !this._player || !this._videoId) return;
+    if (this._loadedId !== this._videoId){
+      this._loadedId = this._videoId;
+      try{ this._player.loadVideoById(this._videoId); this._player.pauseVideo(); this.setState({cur:0, playing:false, trackTitle:''}); }catch(e){}
+    }
   }
   renderVals(){
     const frac = this.state.dur ? Math.min(1, this.state.cur/this.state.dur) : 0;
@@ -485,6 +570,19 @@ class Component extends DCLogic {
     };
     const pal = { p:acc.c, ring:'conic-gradient(from 0deg,'+acc.c+','+acc.c2+','+acc.c+')' };
     if(this._page){ this._page.setAttribute('data-theme', this.state.theme); this._page.style.setProperty('--accent', acc.c); this._page.style.setProperty('--accent2', acc.c2); }
+    // ---- music source parsing (YouTube custom player OR Spotify embed) ----
+    const musicRaw = (this.props.music || 'eCkMQraVsUA').trim();
+    const spM = musicRaw.match(/open\.spotify\.com\/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/) ||
+                (musicRaw.indexOf('spotify:')===0 ? (function(){ const p=musicRaw.split(':'); return p.length>=3?[null,p[1],p[2]]:null; })() : null);
+    const usingSpotify = !!spM;
+    let videoId='';
+    if(!usingSpotify){
+      const ym = musicRaw.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|\/v\/)([A-Za-z0-9_-]{11})/);
+      videoId = ym ? ym[1] : musicRaw.replace(/[^A-Za-z0-9_-]/g,'').slice(0,11);
+    }
+    this._usingSpotify = usingSpotify;
+    this._videoId = videoId;
+    this._syncVideo && this._syncVideo();
     const btnBase = "font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;padding:8px 0;flex:1;transition:.15s;";
     const onB = "border:1px solid "+acc.c+";background:"+acc.soft+";color:var(--t1);";
     const offB = "border:1px solid var(--bd);background:transparent;color:var(--t3);";
@@ -496,6 +594,11 @@ class Component extends DCLogic {
       modalOpen: this.state.modalIndex!=null,
       modalSrc: (this.state.modalIndex!=null && rawWorks[this.state.modalIndex]) || '',
       closeModal: ()=>this.setState({modalIndex:null}),
+      imgSrcRef: (el)=>{
+        if(!el) return;
+        const s = el.getAttribute('data-src') || '';
+        if(s && s.indexOf('{{')<0 && el.src !== s){ el.src = s; }
+      },
       worksGridRef: (el)=>{
         if(!el || el._scanBound) return; el._scanBound = true;
         const setMask = (cell, x, y)=>{ const c=cell.querySelector('[data-color]'); if(c){ const m='radial-gradient(circle 85px at '+x+'px '+y+'px,#000 0,#000 55%,transparent 78%)'; c.style.webkitMaskImage=m; c.style.maskImage=m; } };
@@ -507,6 +610,8 @@ class Component extends DCLogic {
       artistName: this.props.artistName ?? 'Arise',
       handle: this.props.handle ?? '@arise',
       statusText: this.state.typed,
+      vibeWord: this._vibe()[0],
+      vibeSub: this._vibe()[1],
       aboutText: this.props.aboutText ?? 'Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.',
       accentName: hue+'°',
       clocks: [
@@ -519,18 +624,23 @@ class Component extends DCLogic {
       cursorStyle: { display:'inline-block', width:'7px', height:'13px', background:pal.p, borderRadius:'1px', animation:'pf-blink 1.1s steps(1) infinite' },
       onCopy: ()=>{ try{ navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@arise'); }catch(e){} },
       glowRef: (el)=>{ this._glow = el; },
+      usingSpotify: usingSpotify,
+      usingYouTube: !usingSpotify,
+      trackTitle: this.state.trackTitle,
+      coverAnim: this.state.playing ? '' : 'animation-play-state:paused;',
+      coverRef: (el)=>{
+        if(!el || usingSpotify || !videoId) return;
+        const url = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
+        if(el.dataset.cv !== url){ el.dataset.cv = url; el.style.backgroundImage = 'url('+url+')'; }
+      },
       spotifyRef: (el)=>{
-        if(!el) return;
-        const raw = (this.props.spotify || '37i9dQZF1DWWQRwui0ExPn').trim();
-        let type='playlist', id=raw;
-        const m = raw.match(/open\.spotify\.com\/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/);
-        if(m){ type=m[1]; id=m[2]; }
-        else if(raw.startsWith('spotify:')){ const p=raw.split(':'); if(p.length>=3){ type=p[1]; id=p[2]; } }
+        if(!el || !spM) return;
+        const type = spM[1] || 'playlist', id = spM[2];
         const url = 'https://open.spotify.com/embed/'+type+'/'+id+'?utm_source=generator&theme=0';
         if(el.dataset.curSrc !== url){ el.dataset.curSrc = url; el.src = url; }
       },
       particleRef: (el)=>{ if(el && !el._init){ el._init=true; this._initParticles(el); } },
-      pageRef: (el)=>{ this._page = el; if(el){ el.setAttribute('data-theme', this.state.theme); el.style.setProperty('--accent', acc.c); el.style.setProperty('--accent2', acc.c2); } },
+      pageRef: (el)=>{ this._page = el; if(el){ el.setAttribute('data-theme', this.state.theme); el.style.setProperty('--accent', acc.c); el.style.setProperty('--accent2', acc.c2); el.style.setProperty('--accent-soft', acc.soft); el.style.setProperty('--accent-ring', 'hsla('+hue+',72%,68%,.35)'); } },
       panelOpen: this.state.panelOpen,
       togglePanel: ()=>this.setState(s=>({panelOpen:!s.panelOpen})),
       setDark: ()=>this.setState({theme:'dark'}),
