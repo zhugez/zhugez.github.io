@@ -44,7 +44,6 @@
   @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;}}
 </style>
 <script src="./image-slot.js"></script>
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 <script src="./works.js"></script>
 </helmet>
@@ -198,33 +197,18 @@
         </div>
       </div>
 
-      <!-- now playing -->
+      <!-- now playing (spotify) -->
       <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">{{ nowLabel }}</span></div>
-        <div ref="{{ ytRef }}" style="position:absolute;left:-9999px;top:0;width:240px;height:135px;opacity:0;pointer-events:none;"></div>
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="flex:none;width:58px;height:58px;border-radius:12px;background:linear-gradient(150deg,#3a1d6e,var(--accent2));display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:11px;">
-            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite;"></span>
-            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .3s;"></span>
-            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .6s;"></span>
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:15px;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">夜 Yoru · lofi mix ☕</div>
-            <div style="font-size:12.5px;color:var(--t2);">via YouTube · ambient</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;flex:none;">
-            <span style="font-size:15px;color:var(--t3);">⏮</span>
-            <button type="button" class="play-btn" onClick="{{ onToggle }}" aria-label="Play or pause" style="width:46px;height:46px;border:none;cursor:pointer;border-radius:50%;background:linear-gradient(150deg,var(--accent),var(--accent2));color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(122,162,255,.4);transition:transform .15s;" style-hover="transform:scale(1.07);">{{ playIcon }}</button>
-            <span style="font-size:15px;color:var(--t3);">⏭</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">now playing</span></div>
+          <div style="display:flex;align-items:flex-end;gap:3px;height:14px;">
+            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite;"></span>
+            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .3s;"></span>
+            <span style="width:3px;height:100%;background:#1db954;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .6s;"></span>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);">{{ curLabel }}</span>
-          <div onClick="{{ onSeek }}" style="flex:1;height:6px;border-radius:99px;background:rgba(130,150,210,.16);overflow:hidden;cursor:pointer;">
-            <div style="{{ progFillStyle }}"></div>
-          </div>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);">{{ durLabel }}</span>
-          <button type="button" onClick="{{ onMute }}" aria-label="Mute" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;padding:0;line-height:1;">{{ muteIcon }}</button>
+        <div style="border-radius:12px;overflow:hidden;background:#0a0f1f;">
+          <iframe ref="{{ spotifyRef }}" title="Spotify playlist" style="width:100%;height:152px;border:0;display:block;" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
       </div>
 
@@ -235,7 +219,7 @@
           <a href="#" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);text-decoration:none;">view all →</a>
         </div>
         <div ref="{{ worksGridRef }}" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-          <sc-for list="{{ works }}" as="w" hint-placeholder-count="3">
+          <sc-for list="{{ works }}" as="w">
             <div class="work-cell" onDoubleClick="{{ w.open }}" title="double-click to enlarge" style="position:relative;height:104px;border-radius:11px;overflow:hidden;cursor:zoom-in;border:1px solid var(--bd);">
               <sc-if value="{{ w.src }}" hint-placeholder-val="{{ false }}">
               <img src="{{ w.src }}" alt="work" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.82);">
@@ -307,9 +291,34 @@
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;drawing something soft&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;drawing something soft&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spotify&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;37i9dQZF1DWWQRwui0ExPn&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false };
+  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, typed:'' };
+  _startTyping(){
+    const phrases = [
+      this.props.statusText ?? 'drawing something soft',
+      'sketching neon dreams ✦',
+      'lost in another dimension',
+      'vibing to lofi beats ☕',
+      'open for commissions ♡'
+    ];
+    let pi = 0, ci = 0, deleting = false;
+    const step = ()=>{
+      const full = phrases[pi];
+      if(!deleting){
+        ci++;
+        this.setState({ typed: full.slice(0, ci) });
+        if(ci >= full.length){ deleting = true; this._typeT = setTimeout(step, 1600); return; }
+        this._typeT = setTimeout(step, 75 + Math.random()*55);
+      } else {
+        ci--;
+        this.setState({ typed: full.slice(0, ci) });
+        if(ci <= 0){ deleting = false; pi = (pi+1) % phrases.length; this._typeT = setTimeout(step, 350); return; }
+        this._typeT = setTimeout(step, 38);
+      }
+    };
+    step();
+  }
   POS_KEY = 'arise_yt_pos';
   VIDEO_ID = 'eCkMQraVsUA';
   componentDidMount(){
@@ -344,8 +353,9 @@ class Component extends DCLogic {
       }
     };
     run();
+    this._startTyping();
   }
-  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
   _makeSprite(rgb){
     const s = 64, cv = document.createElement('canvas'); cv.width=cv.height=s;
@@ -496,7 +506,7 @@ class Component extends DCLogic {
       },
       artistName: this.props.artistName ?? 'Arise',
       handle: this.props.handle ?? '@arise',
-      statusText: this.props.statusText ?? 'drawing something soft',
+      statusText: this.state.typed,
       aboutText: this.props.aboutText ?? 'Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.',
       accentName: hue+'°',
       clocks: [
@@ -509,6 +519,16 @@ class Component extends DCLogic {
       cursorStyle: { display:'inline-block', width:'7px', height:'13px', background:pal.p, borderRadius:'1px', animation:'pf-blink 1.1s steps(1) infinite' },
       onCopy: ()=>{ try{ navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@arise'); }catch(e){} },
       glowRef: (el)=>{ this._glow = el; },
+      spotifyRef: (el)=>{
+        if(!el) return;
+        const raw = (this.props.spotify || '37i9dQZF1DWWQRwui0ExPn').trim();
+        let type='playlist', id=raw;
+        const m = raw.match(/open\.spotify\.com\/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/);
+        if(m){ type=m[1]; id=m[2]; }
+        else if(raw.startsWith('spotify:')){ const p=raw.split(':'); if(p.length>=3){ type=p[1]; id=p[2]; } }
+        const url = 'https://open.spotify.com/embed/'+type+'/'+id+'?utm_source=generator&theme=0';
+        if(el.dataset.curSrc !== url){ el.dataset.curSrc = url; el.src = url; }
+      },
       particleRef: (el)=>{ if(el && !el._init){ el._init=true; this._initParticles(el); } },
       pageRef: (el)=>{ this._page = el; if(el){ el.setAttribute('data-theme', this.state.theme); el.style.setProperty('--accent', acc.c); el.style.setProperty('--accent2', acc.c2); } },
       panelOpen: this.state.panelOpen,
