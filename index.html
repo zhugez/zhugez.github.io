@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#070a15;-webkit-font-smoothing:antialiased;}
+  ::selection{background:#a78bfa55;color:#fff;}
+  @keyframes pf-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes pf-blink{0%,100%{opacity:1;}50%{opacity:0;}}
+  @keyframes pf-pip{0%,100%{box-shadow:0 0 0 0 rgba(67,209,122,.5);}70%{box-shadow:0 0 0 6px rgba(67,209,122,0);}}
+  @keyframes pf-eq{0%,100%{transform:scaleY(.3);}50%{transform:scaleY(1);}}
+  @keyframes pf-spin{to{transform:rotate(360deg);}}
+  @keyframes pf-spinr{to{transform:rotate(-360deg);}}
+  @keyframes pf-shimmer{0%{background-position:0% 50%;}100%{background-position:220% 50%;}}
+  @keyframes pf-twinkle{0%,100%{transform:scale(1) rotate(0deg);opacity:.7;}50%{transform:scale(1.3) rotate(90deg);opacity:1;}}
+  @keyframes pf-dots{0%,100%{opacity:.3;}50%{opacity:1;}}
+  @keyframes pf-bob{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-11px) rotate(-2deg);}}
+  @keyframes pf-haloSpin{to{transform:rotate(360deg);}}
+  .soc{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;}
+  .soc .soc-ic{transition:transform .22s ease;}
+  .soc:hover .soc-ic{transform:translateX(5px);}
+  .work-cell{transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease;}
+  .work-cell:hover{transform:scale(1.045);z-index:3;border-color:var(--accent)!important;box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 22px var(--accent);}
+  .work-cap{transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1);}
+  .work-cell:hover .work-cap{transform:translateY(0);}
+  .play-btn{position:relative;isolation:isolate;}
+  .play-btn::before{content:'';position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--accent));opacity:0;transition:opacity .25s;z-index:-1;animation:pf-haloSpin 3s linear infinite;}
+  .play-btn:hover::before{opacity:.9;}
+  :root{--bg:#070a15;--card:#0e1426;--panel:#0a0f1f;--bd:rgba(130,150,210,.13);--bd2:rgba(130,150,210,.1);--t1:#e8ebf5;--t2:#aeb6d2;--t3:#9aa2c4;--t4:#737ca0;--accent:#a78bfa;--accent2:#7aa2ff;}
+  [data-theme=light]{--bg:#eceaf7;--card:#ffffff;--panel:#f4f3fc;--bd:rgba(95,85,140,.18);--bd2:rgba(95,85,140,.12);--t1:#241f3a;--t2:#574f74;--t3:#736d92;--t4:#9a93b4;}
+  input[type=range]{-webkit-appearance:none;appearance:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--accent);box-shadow:0 1px 5px rgba(0,0,0,.45);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--accent);cursor:pointer;}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;}}
+</style>
+<script src="./image-slot.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="./works.js"></script>
+</helmet>
+<div ref="{{ pageRef }}" style="position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(700px circle at 16% 12%,rgba(167,139,250,.26),transparent 56%),radial-gradient(680px circle at 88% 18%,rgba(122,162,255,.20),transparent 56%),radial-gradient(760px circle at 60% 108%,rgba(255,122,217,.13),transparent 58%),var(--bg);padding:clamp(18px,3vw,40px) 16px;font-family:'Hanken Grotesk',sans-serif;">
+
+  <div ref="{{ glowRef }}" style="position:fixed;left:0;top:0;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.20),rgba(122,162,255,.10) 45%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);filter:blur(22px);will-change:transform;"></div>
+
+  <canvas ref="{{ particleRef }}" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <div ref="{{ rootRef }}" style="position:relative;z-index:1;width:100%;max-width:968px;margin:0 auto;display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">
+
+    <!-- ============ LEFT COLUMN ============ -->
+    <div style="flex:1 1 296px;min-width:280px;max-width:322px;display:flex;flex-direction:column;gap:18px;">
+
+      <!-- profile card -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;">
+        <div style="position:relative;height:96px;overflow:hidden;background:linear-gradient(135deg,#1a1340,#13213f);">
+          <img src="media/banner.gif" alt="banner" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 56%;display:block;">
+        </div>
+        <div style="padding:0 16px 16px;">
+          <div style="display:flex;align-items:flex-end;gap:12px;margin-top:-34px;">
+            <div style="position:relative;flex:none;">
+              <div style="{{ ringStyle }}">
+                <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--card);border:3px solid var(--card);animation:pf-spinr 7s linear infinite;">
+                  <img src="media/avatar.gif" alt="avatar" style="width:100%;height:100%;object-fit:cover;display:block;">
+                </div>
+              </div>
+              <span style="position:absolute;right:3px;bottom:3px;width:16px;height:16px;border-radius:50%;background:#43d17a;border:3px solid var(--card);animation:pf-pip 2.4s infinite;z-index:2;"></span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;margin-top:10px;">
+            <span style="{{ nameStyle }}">{{ artistName }}</span>
+            <span style="font-size:13px;color:#c9b6ff;display:inline-block;animation:pf-twinkle 2.6s ease-in-out infinite;">✦</span>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--t2);margin-top:3px;cursor:pointer;" onClick="{{ onCopy }}" title="copy handle">{{ handle }} · <span style="color:var(--t4);">#0001</span></div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:13px;">
+            <span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#b9a8f5;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);padding:3px 9px;border-radius:7px;">✓ Verified</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9fc0f5;background:rgba(122,162,255,.12);border:1px solid rgba(122,162,255,.3);padding:3px 9px;border-radius:7px;">✦ Artist</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ffcf6b;background:rgba(255,207,107,.1);border:1px solid rgba(255,207,107,.28);padding:3px 9px;border-radius:7px;">★ Early</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ff9ed6;background:rgba(255,122,217,.1);border:1px solid rgba(255,122,217,.28);padding:3px 9px;border-radius:7px;">♡ Booster</span>
+          </div>
+
+          <div style="margin-top:12px;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.05);border:1px solid var(--bd);border-radius:9px;padding:7px 11px;">
+            <span style="font-size:12px;">🎨</span>
+            <span style="font-size:12.5px;color:var(--t2);">{{ statusText }}</span>
+            <span style="{{ cursorStyle }}"></span>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t4);margin-top:11px;">Joined since 2024</div>
+        </div>
+      </div>
+
+      <!-- current activity -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">current activity</span></div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="flex:none;width:42px;height:42px;border-radius:10px;background:linear-gradient(150deg,#3a1d6e,var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;">🖊️</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;color:var(--t1);font-weight:600;">Procreate</div>
+            <div style="font-size:12px;color:var(--t2);">drawing · 2 hrs 14 min elapsed</div>
+          </div>
+          <div style="display:flex;gap:3px;flex:none;">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pf-dots 1.4s infinite;"></span>
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pf-dots 1.4s infinite .2s;"></span>
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pf-dots 1.4s infinite .4s;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- world clock -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">world clock</span></div>
+        <div style="display:flex;gap:8px;">
+          <sc-for list="{{ clocks }}" as="c" hint-placeholder-count="3">
+            <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:9px 4px;text-align:center;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--t3);">{{ c.label }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:#c9b6ff;margin-top:3px;letter-spacing:.01em;">{{ c.t }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t4);margin-top:2px;">{{ c.d }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">stats</span></div>
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
+            <div data-count="124" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:19px;color:var(--t1);">124</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--t3);margin-top:3px;">ARTWORKS</div>
+          </div>
+          <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
+            <div data-count="48" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:19px;color:var(--t1);">48</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--t3);margin-top:3px;">COMMS</div>
+          </div>
+          <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
+            <div data-count="6" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:19px;color:var(--t1);">6</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--t3);margin-top:3px;">YEARS</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ RIGHT COLUMN ============ -->
+    <div style="flex:3 1 380px;min-width:320px;display:flex;flex-direction:column;gap:18px;">
+
+      <!-- about me -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">about me</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#b9a8f5;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.24);padding:4px 11px;border-radius:8px;">🎨 Illustrator</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9fc0f5;background:rgba(122,162,255,.1);border:1px solid rgba(122,162,255,.24);padding:4px 11px;border-radius:8px;">🌸 Anime</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9ff0d0;background:rgba(67,209,122,.1);border:1px solid rgba(67,209,122,.24);padding:4px 11px;border-radius:8px;">⚡ Cyber</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#ff9ed6;background:rgba(255,122,217,.1);border:1px solid rgba(255,122,217,.24);padding:4px 11px;border-radius:8px;">✨ Fantasy</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#ffd79a;background:rgba(255,207,107,.1);border:1px solid rgba(255,207,107,.24);padding:4px 11px;border-radius:8px;">🌙 Night Owl</span>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent2);margin-bottom:8px;">&gt; currently in another dimension...</div>
+        <p style="margin:0;font-size:14.5px;line-height:1.7;color:var(--t2);">{{ aboutText }}</p>
+        <p style="margin:10px 0 0;font-size:14.5px;line-height:1.7;color:var(--t2);">dm me if u wanna talk about <span style="color:#c9b6ff;font-weight:600;">art, anime, or commissions</span> :)</p>
+      </div>
+
+      <!-- socials -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">socials</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <a class="soc" href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ff7ad9;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,122,217,.5);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,122,217,.14);display:flex;align-items:center;justify-content:center;color:#ff9ed6;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">Instagram</span>
+          </a>
+          <a class="soc" href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ff6b6b;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,107,107,.5);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,107,107,.14);display:flex;align-items:center;justify-content:center;color:#ff9a9a;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">YouTube</span>
+          </a>
+          <a class="soc" href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:#5ee0ff;transform:translateY(-3px);box-shadow:0 0 20px rgba(94,224,255,.5);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(94,224,255,.14);display:flex;align-items:center;justify-content:center;color:#9fe9ff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">Twitter</span>
+          </a>
+          <a class="soc" href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:var(--t2);transform:translateY(-3px);box-shadow:0 0 20px rgba(174,182,210,.4);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(200,210,235,.12);display:flex;align-items:center;justify-content:center;color:var(--t2);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">GitHub</span>
+          </a>
+          <a class="soc" href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:var(--accent);transform:translateY(-3px);box-shadow:0 0 20px var(--accent);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(167,139,250,.14);display:flex;align-items:center;justify-content:center;color:#b9a8f5;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">Portfolio</span>
+          </a>
+          <a class="soc" href="mailto:hello@arise.art" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;transition:.18s;" style-hover="border-color:#43d17a;transform:translateY(-3px);box-shadow:0 0 20px rgba(67,209,122,.5);">
+            <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(67,209,122,.14);display:flex;align-items:center;justify-content:center;color:#9ff0d0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span>
+            <span style="font-size:14px;color:var(--t1);font-weight:500;">Email</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- now playing -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">{{ nowLabel }}</span></div>
+        <div ref="{{ ytRef }}" style="position:absolute;left:-9999px;top:0;width:240px;height:135px;opacity:0;pointer-events:none;"></div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="flex:none;width:58px;height:58px;border-radius:12px;background:linear-gradient(150deg,#3a1d6e,var(--accent2));display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:11px;">
+            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite;"></span>
+            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .3s;"></span>
+            <span style="width:4px;height:100%;background:#fff;border-radius:2px;transform-origin:bottom;animation:pf-eq .9s ease-in-out infinite .6s;"></span>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">夜 Yoru · lofi mix ☕</div>
+            <div style="font-size:12.5px;color:var(--t2);">via YouTube · ambient</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:none;">
+            <span style="font-size:15px;color:var(--t3);">⏮</span>
+            <button type="button" class="play-btn" onClick="{{ onToggle }}" aria-label="Play or pause" style="width:46px;height:46px;border:none;cursor:pointer;border-radius:50%;background:linear-gradient(150deg,var(--accent),var(--accent2));color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(122,162,255,.4);transition:transform .15s;" style-hover="transform:scale(1.07);">{{ playIcon }}</button>
+            <span style="font-size:15px;color:var(--t3);">⏭</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);">{{ curLabel }}</span>
+          <div onClick="{{ onSeek }}" style="flex:1;height:6px;border-radius:99px;background:rgba(130,150,210,.16);overflow:hidden;cursor:pointer;">
+            <div style="{{ progFillStyle }}"></div>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);">{{ durLabel }}</span>
+          <button type="button" onClick="{{ onMute }}" aria-label="Mute" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;padding:0;line-height:1;">{{ muteIcon }}</button>
+        </div>
+      </div>
+
+      <!-- recent works -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">recent works</span></div>
+          <a href="#" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);text-decoration:none;">view all →</a>
+        </div>
+        <div ref="{{ worksGridRef }}" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <sc-for list="{{ works }}" as="w" hint-placeholder-count="3">
+            <div class="work-cell" onDoubleClick="{{ w.open }}" title="double-click to enlarge" style="position:relative;height:104px;border-radius:11px;overflow:hidden;cursor:zoom-in;border:1px solid var(--bd);">
+              <sc-if value="{{ w.src }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ w.src }}" alt="work" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.82);">
+              <img data-color="1" src="{{ w.src }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);mask-image:radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0);">
+              </sc-if>
+              <span style="position:absolute;top:6px;right:6px;font-size:11px;color:#fff;background:rgba(10,15,31,.6);border-radius:6px;padding:2px 5px;line-height:1;pointer-events:none;">⤢</span>
+              <div class="work-cap" style="position:absolute;left:0;right:0;bottom:0;padding:14px 9px 7px;background:linear-gradient(transparent,rgba(20,10,40,.92));pointer-events:none;">
+                <div style="font-size:11.5px;color:#fff;font-weight:600;line-height:1.2;">{{ w.title }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent2);margin-top:2px;">{{ w.meta }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- links -->
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">links</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;transition:.18s;" style-hover="border-color:var(--accent);transform:translateX(3px);">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);"></span>
+            <span style="flex:1;font-size:14px;color:var(--t1);font-weight:500;">📒 Commission Sheet</span>
+            <span style="color:var(--t4);">↗</span>
+          </a>
+          <a href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;transition:.18s;" style-hover="border-color:#ff7ad9;transform:translateX(3px);">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ff7ad9;"></span>
+            <span style="flex:1;font-size:14px;color:var(--t1);font-weight:500;">🖌️ My Gear &amp; Setup</span>
+            <span style="color:var(--t4);">↗</span>
+          </a>
+          <a href="#" style="display:flex;align-items:center;gap:11px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;transition:.18s;" style-hover="border-color:#5ee0ff;transform:translateX(3px);">
+            <span style="width:8px;height:8px;border-radius:50%;background:#5ee0ff;"></span>
+            <span style="flex:1;font-size:14px;color:var(--t1);font-weight:500;">🎮 Genshin Profile</span>
+            <span style="color:var(--t4);">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t4);padding:4px 0 6px;">© 2026 arise · made with neon &amp; coffee</div>
+
+    </div>
+  </div>
+
+  <div style="position:fixed;right:18px;bottom:18px;z-index:55;display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
+    <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,.4);width:206px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-bottom:9px;">theme</div>
+        <div style="display:flex;gap:8px;margin-bottom:15px;">
+          <button type="button" onClick="{{ setDark }}" style="{{ darkBtnStyle }}">☾ Dark</button>
+          <button type="button" onClick="{{ setLight }}" style="{{ lightBtnStyle }}">☀ Light</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;">accent</span><span style="display:flex;align-items:center;gap:6px;"><span style="width:15px;height:15px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t2);">{{ hueLabel }}</span></span></div>
+        <input type="range" min="0" max="360" value="{{ hue }}" onInput="{{ onHue }}" aria-label="Accent hue" style="width:100%;height:12px;border-radius:99px;cursor:pointer;outline:none;background:linear-gradient(90deg,hsl(0 80% 65%),hsl(60 80% 65%),hsl(120 80% 65%),hsl(180 80% 65%),hsl(240 80% 65%),hsl(300 80% 65%),hsl(360 80% 65%));">
+      </div>
+    </sc-if>
+    <button type="button" onClick="{{ togglePanel }}" aria-label="Theme settings" style="width:50px;height:50px;border-radius:50%;border:1px solid var(--bd);cursor:pointer;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .15s;" style-hover="transform:scale(1.08) rotate(8deg);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg></button>
+  </div>
+
+  <div style="position:fixed;right:20px;top:14px;z-index:54;cursor:pointer;transition:transform .2s ease;" style-hover="transform:scale(1.06) rotate(2deg);" title="hi!">
+    <div style="position:relative;width:132px;height:132px;animation:pf-bob 4s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.4));">
+      <img src="media/mascot-cut.png" alt="mascot" style="width:100%;height:100%;object-fit:contain;display:block;">
+      <div style="position:absolute;top:-6px;left:-16px;background:var(--accent);color:#0a0f1f;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;transform:rotate(-6deg);box-shadow:0 3px 8px rgba(0,0,0,.35);white-space:nowrap;">hi! ✦</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ modalSrc }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(4,6,15,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:28px;cursor:zoom-out;">
+      <img src="{{ modalSrc }}" alt="artwork" style="max-width:90vw;max-height:86vh;border-radius:16px;border:1px solid rgba(167,139,250,.45);box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px rgba(167,139,250,.3);">
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@arise&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;drawing something soft&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false };
+  POS_KEY = 'arise_yt_pos';
+  VIDEO_ID = 'eCkMQraVsUA';
+  componentDidMount(){
+    this._clk = setInterval(()=>this.setState(s=>({tick:s.tick+1})), 20000);
+    window.onYouTubeIframeAPIReady = ()=>{ this._initYT(); };
+    this._initYT();
+    // mouse-follow glow
+    this._mx = window.innerWidth/2; this._my = window.innerHeight/2; this._tx = this._mx; this._ty = this._my;
+    this._onMove = (e)=>{ this._tx = e.clientX; this._ty = e.clientY; };
+    window.addEventListener('mousemove', this._onMove, {passive:true});
+    const loop = ()=>{
+      this._mx += (this._tx-this._mx)*0.12; this._my += (this._ty-this._my)*0.12;
+      if(this._glow) this._glow.style.transform = 'translate('+this._mx+'px,'+this._my+'px) translate(-50%,-50%)';
+      this._raf = requestAnimationFrame(loop);
+    };
+    this._raf = requestAnimationFrame(loop);
+    // anime.js entrance + count-up
+    const run = ()=>{
+      if(!window.anime){ this._animT = setTimeout(run, 120); return; }
+      const anime = window.anime;
+      if(this._root && !this._fxDone){
+        this._fxDone = true;
+        const cards = this._root.querySelectorAll(':scope > div > div');
+        cards.forEach(c=>{ c.style.opacity = 0; });
+        anime({ targets: cards, translateY:[24,0], opacity:[0,1], delay: anime.stagger(55), duration:680, easing:'easeOutCubic' });
+        const badges = this._root.querySelectorAll(':scope > div > div span[style*="border-radius:8px"]');
+        anime({ targets: badges, scale:[0.6,1], opacity:[0,1], delay: anime.stagger(40, {start:400}), duration:500, easing:'easeOutBack' });
+        document.querySelectorAll('[data-count]').forEach(el=>{
+          const end = parseFloat(el.getAttribute('data-count'))||0; const obj={v:0};
+          anime({ targets:obj, v:end, duration:1500, delay:500, easing:'easeOutExpo', round:1, update:()=>{ el.textContent = obj.v; } });
+        });
+      }
+    };
+    run();
+  }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
+  _makeSprite(rgb){
+    const s = 64, cv = document.createElement('canvas'); cv.width=cv.height=s;
+    const c = cv.getContext('2d');
+    const g = c.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+    g.addColorStop(0,'rgba('+rgb+',1)');
+    g.addColorStop(0.25,'rgba('+rgb+',0.55)');
+    g.addColorStop(1,'rgba('+rgb+',0)');
+    c.fillStyle=g; c.fillRect(0,0,s,s);
+    return cv;
+  }
+  _initParticles(canvas){
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr = Math.min(window.devicePixelRatio||1, 2);
+    const COLORS = ['183,162,255','138,178,255','255,150,224','150,235,255'];
+    const sprites = COLORS.map(c=>this._makeSprite(c));
+    let dust=[], orbs=[], stars=[], shoot=null, shootT=180+Math.random()*240;
+    const rnd=(a,b)=>a+Math.random()*(b-a);
+    const resize = ()=>{
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = W*dpr; canvas.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      const area = W*H;
+      // glowing dust motes drifting upward
+      dust = Array.from({length:Math.round(area/16000)}, ()=>{
+        const ci=(Math.random()*sprites.length)|0;
+        return { x:rnd(0,W), y:rnd(0,H), r:rnd(7,20), vy:-rnd(0.05,0.28), sway:rnd(0.2,0.7), ph:rnd(0,6.28), tw:rnd(0.006,0.02), a:rnd(0.12,0.4), ci };
+      });
+      // large soft bokeh orbs for depth
+      orbs = Array.from({length:Math.round(area/150000)+2}, ()=>{
+        const ci=(Math.random()*sprites.length)|0;
+        return { x:rnd(0,W), y:rnd(0,H), r:rnd(60,150), vx:rnd(-0.08,0.08), vy:rnd(-0.06,0.04), ph:rnd(0,6.28), tw:rnd(0.002,0.006), a:rnd(0.05,0.12), ci };
+      });
+      // crisp tiny twinkling stars
+      stars = Array.from({length:Math.round(area/9000)}, ()=>({ x:rnd(0,W), y:rnd(0,H), r:rnd(0.4,1.4), ph:rnd(0,6.28), tw:rnd(0.015,0.05), a:rnd(0.3,0.9) }));
+    };
+    resize();
+    this._pResize = resize; window.addEventListener('resize', resize);
+    const draw = ()=>{
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation='lighter';
+      // bokeh orbs
+      for(const o of orbs){
+        o.x+=o.vx; o.y+=o.vy; o.ph+=o.tw;
+        if(o.x<-o.r)o.x=W+o.r; if(o.x>W+o.r)o.x=-o.r;
+        if(o.y<-o.r)o.y=H+o.r; if(o.y>H+o.r)o.y=-o.r;
+        ctx.globalAlpha = o.a*(0.7+0.3*Math.sin(o.ph));
+        ctx.drawImage(sprites[o.ci], o.x-o.r, o.y-o.r, o.r*2, o.r*2);
+      }
+      // dust motes
+      for(const p of dust){
+        p.y+=p.vy; p.ph+=p.tw; p.x+=Math.sin(p.ph)*p.sway*0.15;
+        if(p.y<-p.r){ p.y=H+p.r; p.x=rnd(0,W); }
+        if(p.x<-p.r)p.x=W+p.r; if(p.x>W+p.r)p.x=-p.r;
+        ctx.globalAlpha = p.a*(0.55+0.45*Math.sin(p.ph));
+        ctx.drawImage(sprites[p.ci], p.x-p.r, p.y-p.r, p.r*2, p.r*2);
+      }
+      // twinkling stars
+      for(const s of stars){
+        s.ph+=s.tw;
+        const tw=0.35+0.65*(0.5+0.5*Math.sin(s.ph));
+        ctx.globalAlpha = s.a*tw;
+        ctx.fillStyle='#fff';
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.2832); ctx.fill();
+      }
+      // occasional shooting star
+      if(shoot){
+        shoot.x+=shoot.vx; shoot.y+=shoot.vy; shoot.life-=1;
+        const len=shoot.life>0?1:0;
+        const grad=ctx.createLinearGradient(shoot.x,shoot.y,shoot.x-shoot.vx*8,shoot.y-shoot.vy*8);
+        grad.addColorStop(0,'rgba(255,255,255,'+(0.8*Math.max(0,shoot.life/shoot.max))+')');
+        grad.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.globalAlpha=1; ctx.strokeStyle=grad; ctx.lineWidth=2; ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(shoot.x,shoot.y); ctx.lineTo(shoot.x-shoot.vx*8,shoot.y-shoot.vy*8); ctx.stroke();
+        if(shoot.life<=0 || shoot.x>W+50 || shoot.y>H+50) shoot=null;
+      } else if(--shootT<=0){
+        shootT=420+Math.random()*600;
+        const sp=rnd(6,10);
+        shoot={ x:rnd(0,W*0.5), y:rnd(0,H*0.3), vx:sp, vy:sp*rnd(0.35,0.6), life:60, max:60 };
+      }
+      ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+      this._pRaf = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+  clock(offsetHrs){
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset()*60000;
+    const d = new Date(utc + offsetHrs*3600000);
+    const hh = String(d.getHours()).padStart(2,'0'), mm = String(d.getMinutes()).padStart(2,'0');
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return { t: hh+':'+mm, d: days[d.getDay()]+' '+mon[d.getMonth()]+' '+d.getDate() };
+  }
+  _initYT(){
+    if (this._player || !this._ytEl || !(window.YT && window.YT.Player)) return;
+    this._player = new window.YT.Player(this._ytEl, {
+      videoId: this.VIDEO_ID,
+      playerVars: { controls:0, disablekb:1, modestbranding:1, rel:0, playsinline:1, fs:0 },
+      events: {
+        onReady: (e)=>{
+          let saved=0; try{ saved=parseFloat(localStorage.getItem(this.POS_KEY))||0; }catch(err){}
+          const dur = e.target.getDuration() || 0;
+          if (saved>0 && saved<dur) { e.target.seekTo(saved, true); e.target.pauseVideo(); }
+          this.setState({ dur: dur, cur: saved||0 });
+          this._poll = setInterval(()=>{
+            if (!this._player || !this._player.getCurrentTime) return;
+            const c = this._player.getCurrentTime() || 0;
+            this.setState({ cur: c, dur: this._player.getDuration() || this.state.dur });
+            try{ localStorage.setItem(this.POS_KEY, String(Math.floor(c))); }catch(err){}
+          }, 500);
+        },
+        onStateChange: (e)=>{
+          const st = e.data;
+          if (st===1) this.setState({playing:true});
+          else if (st===2 || st===0) this.setState({playing:false});
+          if (st===0 && this._player) { this._player.seekTo(0, true); this._player.playVideo(); }
+        }
+      }
+    });
+  }
+  renderVals(){
+    const frac = this.state.dur ? Math.min(1, this.state.cur/this.state.dur) : 0;
+    const hue = this.state.hue;
+    const h2 = (hue+28)%360;
+    const acc = {
+      c:'hsl('+hue+' 72% 68%)', c2:'hsl('+h2+' 80% 70%)',
+      soft:'hsla('+hue+',72%,68%,.18)', glow:'hsla('+hue+',80%,65%,.45)'
+    };
+    const pal = { p:acc.c, ring:'conic-gradient(from 0deg,'+acc.c+','+acc.c2+','+acc.c+')' };
+    if(this._page){ this._page.setAttribute('data-theme', this.state.theme); this._page.style.setProperty('--accent', acc.c); this._page.style.setProperty('--accent2', acc.c2); }
+    const btnBase = "font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;padding:8px 0;flex:1;transition:.15s;";
+    const onB = "border:1px solid "+acc.c+";background:"+acc.soft+";color:var(--t1);";
+    const offB = "border:1px solid var(--bd);background:transparent;color:var(--t3);";
+    const rawWorks = (typeof window!=='undefined' && window.ARISE_WORKS) ? window.ARISE_WORKS : [];
+    const WTITLES = [['Neon Shrine','illustration'],['Cyber Priestess','character'],['Midnight Bloom','concept']];
+    const works = rawWorks.map((src,i)=>({ src, title:(WTITLES[i%WTITLES.length][0]), meta:(WTITLES[i%WTITLES.length][1]), open: ()=>this.setState({modalIndex:i}) }));
+    return {
+      works,
+      modalOpen: this.state.modalIndex!=null,
+      modalSrc: (this.state.modalIndex!=null && rawWorks[this.state.modalIndex]) || '',
+      closeModal: ()=>this.setState({modalIndex:null}),
+      worksGridRef: (el)=>{
+        if(!el || el._scanBound) return; el._scanBound = true;
+        const setMask = (cell, x, y)=>{ const c=cell.querySelector('[data-color]'); if(c){ const m='radial-gradient(circle 85px at '+x+'px '+y+'px,#000 0,#000 55%,transparent 78%)'; c.style.webkitMaskImage=m; c.style.maskImage=m; } };
+        const clearMask = (cell)=>{ const c=cell.querySelector('[data-color]'); if(c){ const m='radial-gradient(circle 0px at 50% 50%,#000 0,transparent 0)'; c.style.webkitMaskImage=m; c.style.maskImage=m; } };
+        el.addEventListener('mousemove', (e)=>{ const cell=e.target.closest('.work-cell'); if(!cell||!el.contains(cell)) return; const r=cell.getBoundingClientRect(); setMask(cell, e.clientX-r.left, e.clientY-r.top); });
+        el.addEventListener('mouseleave', ()=>{ el.querySelectorAll('.work-cell').forEach(clearMask); }, true);
+        el.addEventListener('mouseout', (e)=>{ const cell=e.target.closest('.work-cell'); if(cell && !cell.contains(e.relatedTarget)) clearMask(cell); });
+      },
+      artistName: this.props.artistName ?? 'Arise',
+      handle: this.props.handle ?? '@arise',
+      statusText: this.props.statusText ?? 'drawing something soft',
+      aboutText: this.props.aboutText ?? 'Freelance illustrator drawing character-driven, neon-lit worlds with an anime heart. Currently building a new collection.',
+      accentName: hue+'°',
+      clocks: [
+        Object.assign({label:'VN'}, this.clock(7)),
+        Object.assign({label:'US'}, this.clock(-4)),
+        Object.assign({label:'JP'}, this.clock(9))
+      ],
+      ringStyle: { width:'80px', height:'80px', borderRadius:'50%', padding:'3px', background:pal.ring, boxShadow:'0 6px 20px rgba(0,0,0,.4),0 0 22px '+acc.glow, animation:'pf-spin 7s linear infinite' },
+      nameStyle: { fontFamily:"'Zen Kaku Gothic New',sans-serif", fontWeight:900, fontSize:'22px', lineHeight:1, color:'var(--t1)', textShadow:'0 0 18px '+acc.glow },
+      cursorStyle: { display:'inline-block', width:'7px', height:'13px', background:pal.p, borderRadius:'1px', animation:'pf-blink 1.1s steps(1) infinite' },
+      onCopy: ()=>{ try{ navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@arise'); }catch(e){} },
+      glowRef: (el)=>{ this._glow = el; },
+      particleRef: (el)=>{ if(el && !el._init){ el._init=true; this._initParticles(el); } },
+      pageRef: (el)=>{ this._page = el; if(el){ el.setAttribute('data-theme', this.state.theme); el.style.setProperty('--accent', acc.c); el.style.setProperty('--accent2', acc.c2); } },
+      panelOpen: this.state.panelOpen,
+      togglePanel: ()=>this.setState(s=>({panelOpen:!s.panelOpen})),
+      setDark: ()=>this.setState({theme:'dark'}),
+      setLight: ()=>this.setState({theme:'light'}),
+      darkBtnStyle: Object.assign({fontFamily:"'JetBrains Mono',monospace",fontSize:'12px',fontWeight:600,cursor:'pointer',borderRadius:'9px',padding:'8px 0',flex:1,transition:'.15s'}, this.state.theme==='dark'?{border:'1px solid '+acc.c,background:acc.soft,color:'var(--t1)'}:{border:'1px solid var(--bd)',background:'transparent',color:'var(--t2)'}),
+      lightBtnStyle: Object.assign({fontFamily:"'JetBrains Mono',monospace",fontSize:'12px',fontWeight:600,cursor:'pointer',borderRadius:'9px',padding:'8px 0',flex:1,transition:'.15s'}, this.state.theme==='light'?{border:'1px solid '+acc.c,background:acc.soft,color:'var(--t1)'}:{border:'1px solid var(--bd)',background:'transparent',color:'var(--t2)'}),
+      hue: hue,
+      hueLabel: hue+'°',
+      onHue: (e)=>this.setState({hue: +e.target.value}),
+      rootRef: (el)=>{ this._root = el; },
+      ytRef: (el)=>{ this._ytEl = el; this._initYT(); },
+      onToggle: ()=>{ const p=this._player; if(!p) return; if(this.state.playing){ p.pauseVideo(); } else { p.playVideo(); } },
+      onSeek: (e)=>{ const p=this._player; if(!p || !this.state.dur) return; const r=e.currentTarget.getBoundingClientRect(); const f=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); const t=f*this.state.dur; p.seekTo(t,true); this.setState({cur:t}); },
+      onMute: ()=>{ const p=this._player; if(!p) return; if(p.isMuted()){ p.unMute(); this.setState({muted:false}); } else { p.mute(); this.setState({muted:true}); } },
+      playIcon: this.state.playing ? '⏸' : '▶',
+      muteIcon: this.state.muted ? '🔇' : '🔊',
+      nowLabel: this.state.playing ? 'now playing' : 'paused',
+      curLabel: this.fmt(this.state.cur),
+      durLabel: this.fmt(this.state.dur),
+      progFillStyle: { height:'100%', borderRadius:'99px', background:'linear-gradient(90deg,'+acc.c+','+acc.c2+')', width:'100%', transformOrigin:'left', transform:'scaleX('+frac+')', transition:'transform .2s linear' }
+    };
+  }
+}
+</script>
+</body>
+</html>
