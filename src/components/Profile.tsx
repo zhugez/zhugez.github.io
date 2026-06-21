@@ -588,7 +588,7 @@ export default class Profile extends Component<any, any> {
       { ic: '⌨️', name: 'NJ81', desc: 'Mechanical keyboard', variation: '', img: '', url: '' },
       { ic: '🎧', name: 'Audio-Technica ATH-M50x', desc: 'Studio headphones', variation: '', img: 'https://static.wixstatic.com/media/d8450b_6f5a6b50487d4aafba73476993eee1b6~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg', url: 'https://www.thaisonbeatbox.com/product-page/audio-technica-ath-m50x' },
       { ic: '🎚️', name: 'Arturia MiniFuse 2', desc: 'USB-C audio interface', variation: 'White', img: 'https://static.wixstatic.com/media/d8450b_46909e77d5f648d393030c66056ce4e6~mv2.jpeg/v1/fit/w_500,h_500,q_90/file.jpg', url: 'https://www.thaisonbeatbox.com/product-page/arturia-minifuse-2-white' },
-      { ic: '📷', name: 'OBSBOT Meet 2', desc: 'AI tracking webcam', variation: '', img: '', url: '' },
+      { ic: '📷', name: 'OBSBOT Meet 2', desc: 'AI tracking webcam', variation: 'White', img: '', url: '' },
       { ic: '🎙️', name: 'Razer Seiren V3 Chroma', desc: 'USB stream mic · RGB', variation: 'White', img: 'https://bizweb.dktcdn.net/thumb/grande/100/329/122/products/aeimageframe-34806908-7467710e-eed0-4a43-8a79-1dccee71d90a.png?v=1767322747487', url: 'https://memoryzone.com.vn/thiet-bi-stream-microphone-razer-seiren-v3-chroma?variantid=117442208' },
       { ic: '🎹', name: 'Arturia KeyLab Essential 88 mk3', desc: 'MIDI controller · 88 keys', variation: 'White', img: '', url: 'https://nhaccutienmanh.vn/arturia-keylab-essential-88-mk3-midi-controller/' },
       { ic: '🖥️', name: 'LG 24GS60F-B', desc: 'Gaming monitor · 24" IPS · FHD · 180Hz', variation: 'Black', img: '', url: 'https://www.lg.com/us/monitors/lg-24gs60f-b-gaming-monitor' }
@@ -962,14 +962,14 @@ export default class Profile extends Component<any, any> {
 
         {gearOpen && (
           <div onClick={this.closeGear} role="dialog" aria-modal="true" aria-label="Gear and setup" style="position:fixed;inset:0;z-index:62;background:rgba(4,6,15,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;">
-            <div onClick={this.stop} style="width:100%;max-width:580px;max-height:84vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px var(--accent-soft,rgba(167,139,250,.3));">
+            <div onClick={this.stop} style="width:100%;max-width:min(94vw,920px);max-height:90vh;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px var(--accent-soft,rgba(167,139,250,.3));">
               <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:var(--card);border-bottom:1px solid var(--bd);z-index:1;">
                 <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:14px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.14em;color:var(--t2);text-transform:uppercase;">gear & setup</span></div>
                 <button type="button" ref={this.gearCloseRef} onClick={this.closeGear} aria-label="Close" style="width:44px;height:44px;border-radius:10px;border:1px solid var(--bd);background:var(--panel);color:var(--t2);cursor:pointer;font-size:0.9375rem;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
               </div>
-              <div class="gear-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 18px 20px;">
+              <div class="gear-grid" style="display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:16px 18px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">
                 {gear.map((g, i) => (
-                  <div key={i} style="display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;">
+                  <div key={i} style="flex:0 0 192px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
                       <div style="flex:none;width:40px;height:40px;border-radius:10px;background:rgba(167,139,250,.12);display:flex;align-items:center;justify-content:center;font-size:1.25rem;">{g.ic}</div>
                       {g.url && <a href={g.url} target="_blank" rel="noopener" onClick={this.stop} style="color:var(--accent2);text-decoration:none;font-size:0.8125rem;">↗</a>}
