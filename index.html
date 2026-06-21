@@ -376,7 +376,7 @@
         <div style="display:flex;flex-direction:column;gap:10px;padding:16px 18px 20px;">
           <sc-for list="{{ gear }}" as="g">
             <div style="display:flex;align-items:flex-start;gap:12px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:12px 13px;">
-              <div style="position:relative;flex:none;width:48px;height:48px;border-radius:10px;background:rgba(167,139,250,.12);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:21px;">{{ g.ic }}<sc-if value="{{ g.img }}"><img src="{{ g.img }}" alt="{{ g.name }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></sc-if></div>
+              <div style="flex:none;width:38px;height:38px;border-radius:9px;background:rgba(167,139,250,.12);display:flex;align-items:center;justify-content:center;font-size:19px;">{{ g.ic }}</div>
               <div style="flex:1;min-width:0;">
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:14px;color:var(--t1);font-weight:600;line-height:1.25;">{{ g.name }}</span><sc-if value="{{ g.url }}"><a href="{{ g.url }}" target="_blank" rel="noopener" onClick="{{ stop }}" style="color:var(--accent2);text-decoration:none;font-size:12px;">↗</a></sc-if></div>
                 <div style="font-size:12px;color:var(--t3);margin-top:2px;">{{ g.desc }}</div>
