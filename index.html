@@ -71,10 +71,10 @@
   <div ref="{{ loaderRef }}" style="position:fixed;inset:0;z-index:90;overflow:hidden;background:radial-gradient(720px circle at 50% 38%,rgba(167,139,250,.13),transparent 60%),#070a15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;">
     <audio ref="{{ sfxRef }}" src="media/konichiwa.mp3" preload="auto"></audio>
     <div style="position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0,rgba(255,255,255,.022) 1px,transparent 1px,transparent 3px);animation:pf-scan 7s linear infinite;opacity:.6;"></div>
-    <div style="position:relative;width:112px;height:112px;">
-      <div style="position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),transparent 70%);animation:pf-spin 1.2s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 4px));"></div>
-      <div style="position:absolute;inset:15px;border-radius:50%;background:conic-gradient(from 200deg,var(--accent2),transparent 62%);animation:pf-spinr 1.9s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));"></div>
-      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.875rem;color:#fff;text-shadow:0 0 20px var(--accent);animation:pf-twinkle 2.4s ease-in-out infinite;">✦</div>
+    <div style="position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;">
+      <div style="position:absolute;width:132px;height:132px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),transparent 72%);animation:pf-spin 1.3s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));opacity:.65;"></div>
+      <div style="position:absolute;width:118px;height:118px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.32),transparent 68%);filter:blur(9px);animation:pf-twinkle 2.6s ease-in-out infinite;"></div>
+      <img src="media/loader-icon.png" alt="" width="98" height="98" style="position:relative;width:98px;height:98px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(122,162,255,.55));animation:pf-bob 3s ease-in-out infinite;">
     </div>
     <div style="font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:2.125rem;letter-spacing:.34em;padding-left:.34em;background:linear-gradient(90deg,var(--accent),var(--accent2),#fff,var(--accent2),var(--accent));background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 18px rgba(167,139,250,.45));animation:pf-shimmer 2.6s linear infinite;">ZhugeZ</div>
     <div ref="{{ loaderLogRef }}" style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;line-height:1.75;color:var(--t3);width:min(82vw,308px);min-height:76px;text-align:left;white-space:pre-wrap;"></div>
@@ -806,8 +806,8 @@ class Component extends DCLogic {
       accentName: hue+'°',
       clocks: [
         Object.assign({label:'VN'}, this.clock(7)),
-        Object.assign({label:'US'}, this.clock(-4)),
-        Object.assign({label:'JP'}, this.clock(9))
+        Object.assign({label:'FR'}, this.clock(2)),
+        Object.assign({label:'US'}, this.clock(-4))
       ],
       ringStyle: { width:'80px', height:'80px', borderRadius:'50%', padding:'3px', background:pal.ring, boxShadow:'0 6px 20px rgba(0,0,0,.4),0 0 22px '+acc.glow, animation:'pf-spin 7s linear infinite' },
       nameStyle: { fontFamily:"'Zen Kaku Gothic New',sans-serif", fontWeight:900, fontSize:'22px', lineHeight:1, color:'var(--t1)', textShadow:'0 0 18px '+acc.glow },
