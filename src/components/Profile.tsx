@@ -967,9 +967,9 @@ export default class Profile extends Component<any, any> {
                 <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:14px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.14em;color:var(--t2);text-transform:uppercase;">gear & setup</span></div>
                 <button type="button" ref={this.gearCloseRef} onClick={this.closeGear} aria-label="Close" style="width:44px;height:44px;border-radius:10px;border:1px solid var(--bd);background:var(--panel);color:var(--t2);cursor:pointer;font-size:0.9375rem;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
               </div>
-              <div class="gear-grid" style="display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:16px 18px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">
+              <div class="gear-grid" style="display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,1fr);grid-auto-columns:192px;gap:12px;overflow-x:auto;overflow-y:hidden;padding:16px 18px 20px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;">
                 {gear.map((g, i) => (
-                  <div key={i} style="flex:0 0 192px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;">
+                  <div key={i} style="scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
                       <div style="flex:none;width:40px;height:40px;border-radius:10px;background:rgba(167,139,250,.12);display:flex;align-items:center;justify-content:center;font-size:1.25rem;">{g.ic}</div>
                       {g.url && <a href={g.url} target="_blank" rel="noopener" onClick={this.stop} style="color:var(--accent2);text-decoration:none;font-size:0.8125rem;">↗</a>}
