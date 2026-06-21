@@ -591,7 +591,8 @@ export default class Profile extends Component<any, any> {
       { ic: '📷', name: 'OBSBOT Meet 2', desc: 'AI tracking webcam', variation: 'White', img: '', url: '' },
       { ic: '🎙️', name: 'Razer Seiren V3 Chroma', desc: 'USB stream mic · RGB', variation: 'White', img: 'https://bizweb.dktcdn.net/thumb/grande/100/329/122/products/aeimageframe-34806908-7467710e-eed0-4a43-8a79-1dccee71d90a.png?v=1767322747487', url: 'https://memoryzone.com.vn/thiet-bi-stream-microphone-razer-seiren-v3-chroma?variantid=117442208' },
       { ic: '🎹', name: 'Arturia KeyLab Essential 88 mk3', desc: 'MIDI controller · 88 keys', variation: 'White', img: '', url: 'https://nhaccutienmanh.vn/arturia-keylab-essential-88-mk3-midi-controller/' },
-      { ic: '🖥️', name: 'LG 24GS60F-B', desc: 'Gaming monitor · 24" IPS · FHD · 180Hz', variation: 'Black', img: '', url: 'https://www.lg.com/us/monitors/lg-24gs60f-b-gaming-monitor' }
+      { ic: '🖥️', name: 'LG 24GS60F-B', desc: 'Gaming monitor · 24" IPS · FHD · 180Hz', variation: 'Black', img: '', url: 'https://www.lg.com/us/monitors/lg-24gs60f-b-gaming-monitor' },
+      { ic: '🔊', name: 'Ortizan C7', desc: 'Studio monitor speakers', variation: 'White', img: '', url: '' }
     ];
     const artistName = this.props.artistName ?? 'Ly Ngoc Vu';
     const handle = this.props.handle ?? '@zhugez';
