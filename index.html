@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lý Ngọc Vũ · zhugez</title>
+<title>Ly Ngoc Vu · zhugez</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -393,7 +393,7 @@
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Lý Ngọc Vũ&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@zhugez&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;shipping neon-lit code&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Creative coder & aspiring hacker — building web apps, AI tools and neon-lit side projects. Currently turning ideas into shipped code.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;music&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;eCkMQraVsUA&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ly Ngoc Vu&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@zhugez&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;shipping neon-lit code&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Creative coder & aspiring hacker — building web apps, AI tools and neon-lit side projects. Currently turning ideas into shipped code.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;music&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;eCkMQraVsUA&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, gearOpen:false, typed:'', vibeIdx:0, trackTitle:'loading track…' };
   _vibe(){
@@ -693,7 +693,7 @@ class Component extends DCLogic {
         el.addEventListener('mouseleave', ()=>{ el.querySelectorAll('.work-cell').forEach(clearMask); }, true);
         el.addEventListener('mouseout', (e)=>{ const cell=e.target.closest('.work-cell'); if(cell && !cell.contains(e.relatedTarget)) clearMask(cell); });
       },
-      artistName: this.props.artistName ?? 'Lý Ngọc Vũ',
+      artistName: this.props.artistName ?? 'Ly Ngoc Vu',
       handle: this.props.handle ?? '@zhugez',
       statusText: this.state.typed,
       vibeWord: this._vibe()[0],
