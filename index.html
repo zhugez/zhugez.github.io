@@ -669,16 +669,16 @@ class Component extends DCLogic {
       closeGear: ()=>this.setState({gearOpen:false}),
       stop: (e)=>{ if(e&&e.stopPropagation)e.stopPropagation(); },
       gear: [
-        { ic:'🖱️', name:'ATK Blazing Sky X1 Ultimate', desc:'Chuột không dây · PAW3950 8K', variation:'X1 Ultimate · Trắng', img:'', url:'https://shopee.vn/-S%E1%BA%B4N-GIAO-Chu%E1%BB%99t-kh%C3%B4ng-d%C3%A2y-ATK-Blazing-Sky-X1-Ultra-X1-Promax-X1-Pro-X1-SE-PAW3950-8K-(T%E1%BA%B7ng-k%C3%A8m-dongle-8K)-i.113486214.27651954149' },
-        { ic:'⌨️', name:'ATK ACE68 Air', desc:'Bàn phím cơ', variation:'Trắng', img:'', url:'' },
-        { ic:'🎧', name:'EPZ TP35 PRO', desc:'Portable DAC/AMP · CS43198 ×2 · đàm thoại', variation:'Bạc', img:'', url:'' },
-        { ic:'🖊️', name:'XPPen Deco 01 V3', desc:'Bảng vẽ đồ hoạ · bút 16K · Android', variation:'Đen', img:'', url:'' },
-        { ic:'⌨️', name:'NJ81', desc:'Bàn phím cơ', variation:'', img:'', url:'' },
-        { ic:'🎧', name:'Audio-Technica ATH-M50x', desc:'Tai nghe studio', variation:'', img:'https://static.wixstatic.com/media/d8450b_6f5a6b50487d4aafba73476993eee1b6~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg', url:'https://www.thaisonbeatbox.com/product-page/audio-technica-ath-m50x' },
-        { ic:'🎚️', name:'Arturia MiniFuse 2', desc:'Audio interface USB-C', variation:'Trắng', img:'https://static.wixstatic.com/media/d8450b_46909e77d5f648d393030c66056ce4e6~mv2.jpeg/v1/fit/w_500,h_500,q_90/file.jpg', url:'https://www.thaisonbeatbox.com/product-page/arturia-minifuse-2-white' },
-        { ic:'📷', name:'OBSBOT Meet 2', desc:'Webcam AI tracking', variation:'', img:'', url:'' },
-        { ic:'🎙️', name:'Razer Seiren V3 Chroma', desc:'Mic stream USB · RGB', variation:'White', img:'https://bizweb.dktcdn.net/thumb/grande/100/329/122/products/aeimageframe-34806908-7467710e-eed0-4a43-8a79-1dccee71d90a.png?v=1767322747487', url:'https://memoryzone.com.vn/thiet-bi-stream-microphone-razer-seiren-v3-chroma?variantid=117442208' },
-        { ic:'🎹', name:'Arturia KeyLab Essential 88 mk3', desc:'MIDI controller · 88 phím', variation:'White', img:'', url:'https://nhaccutienmanh.vn/arturia-keylab-essential-88-mk3-midi-controller/' }
+        { ic:'🖱️', name:'ATK Blazing Sky X1 Ultimate', desc:'Wireless mouse · PAW3950 8K', variation:'X1 Ultimate · White', img:'', url:'https://shopee.vn/-S%E1%BA%B4N-GIAO-Chu%E1%BB%99t-kh%C3%B4ng-d%C3%A2y-ATK-Blazing-Sky-X1-Ultra-X1-Promax-X1-Pro-X1-SE-PAW3950-8K-(T%E1%BA%B7ng-k%C3%A8m-dongle-8K)-i.113486214.27651954149' },
+        { ic:'⌨️', name:'ATK ACE68 Air', desc:'Mechanical keyboard', variation:'White', img:'', url:'' },
+        { ic:'🎧', name:'EPZ TP35 PRO', desc:'Portable DAC/AMP · CS43198 ×2 · mic support', variation:'Silver', img:'', url:'' },
+        { ic:'🖊️', name:'XPPen Deco 01 V3', desc:'Graphics tablet · 16K pen · Android', variation:'Black', img:'', url:'' },
+        { ic:'⌨️', name:'NJ81', desc:'Mechanical keyboard', variation:'', img:'', url:'' },
+        { ic:'🎧', name:'Audio-Technica ATH-M50x', desc:'Studio headphones', variation:'', img:'https://static.wixstatic.com/media/d8450b_6f5a6b50487d4aafba73476993eee1b6~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg', url:'https://www.thaisonbeatbox.com/product-page/audio-technica-ath-m50x' },
+        { ic:'🎚️', name:'Arturia MiniFuse 2', desc:'USB-C audio interface', variation:'White', img:'https://static.wixstatic.com/media/d8450b_46909e77d5f648d393030c66056ce4e6~mv2.jpeg/v1/fit/w_500,h_500,q_90/file.jpg', url:'https://www.thaisonbeatbox.com/product-page/arturia-minifuse-2-white' },
+        { ic:'📷', name:'OBSBOT Meet 2', desc:'AI tracking webcam', variation:'', img:'', url:'' },
+        { ic:'🎙️', name:'Razer Seiren V3 Chroma', desc:'USB stream mic · RGB', variation:'White', img:'https://bizweb.dktcdn.net/thumb/grande/100/329/122/products/aeimageframe-34806908-7467710e-eed0-4a43-8a79-1dccee71d90a.png?v=1767322747487', url:'https://memoryzone.com.vn/thiet-bi-stream-microphone-razer-seiren-v3-chroma?variantid=117442208' },
+        { ic:'🎹', name:'Arturia KeyLab Essential 88 mk3', desc:'MIDI controller · 88 keys', variation:'White', img:'', url:'https://nhaccutienmanh.vn/arturia-keylab-essential-88-mk3-midi-controller/' }
       ],
       imgSrcRef: (el)=>{
         if(!el) return;
