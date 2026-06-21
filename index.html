@@ -16,6 +16,11 @@
   *{box-sizing:border-box;}
   body{margin:0;background:#070a15;-webkit-font-smoothing:antialiased;}
   ::selection{background:#a78bfa55;color:#fff;}
+  :where(a,button,[tabindex],input,iframe):focus-visible{outline:2px solid var(--accent,#a78bfa);outline-offset:2px;border-radius:4px;}
+  :where(a,button,[tabindex]):focus:not(:focus-visible){outline:none;}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
+  body.dc-modal-lock{overflow:hidden;}
+  @media (max-width:560px){.gear-grid{grid-template-columns:1fr !important;}}
   @keyframes pf-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
   @keyframes pf-blink{0%,100%{opacity:1;}50%{opacity:0;}}
   @keyframes pf-pip{0%,100%{box-shadow:0 0 0 0 rgba(67,209,122,.5);}70%{box-shadow:0 0 0 6px rgba(67,209,122,0);}}
@@ -367,13 +372,13 @@
   </sc-if>
 
   <sc-if value="{{ gearOpen }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeGear }}" style="position:fixed;inset:0;z-index:62;background:rgba(4,6,15,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div onClick="{{ closeGear }}" role="dialog" aria-modal="true" aria-label="Gear and setup" style="position:fixed;inset:0;z-index:62;background:rgba(4,6,15,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;">
       <div onClick="{{ stop }}" style="width:100%;max-width:580px;max-height:84vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px var(--accent-soft,rgba(167,139,250,.3));">
         <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:var(--card);border-bottom:1px solid var(--bd);z-index:1;">
           <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:14px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--t2);text-transform:uppercase;">gear &amp; setup</span></div>
-          <button type="button" onClick="{{ closeGear }}" aria-label="Close" style="width:30px;height:30px;border-radius:8px;border:1px solid var(--bd);background:var(--panel);color:var(--t2);cursor:pointer;font-size:14px;line-height:1;">✕</button>
+          <button type="button" ref="{{ gearCloseRef }}" onClick="{{ closeGear }}" aria-label="Close" style="width:30px;height:30px;border-radius:8px;border:1px solid var(--bd);background:var(--panel);color:var(--t2);cursor:pointer;font-size:14px;line-height:1;">✕</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 18px 20px;">
+        <div class="gear-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 18px 20px;">
           <sc-for list="{{ gear }}" as="g">
             <div style="display:flex;flex-direction:column;gap:9px;background:var(--panel);border:1px solid var(--bd2);border-radius:12px;padding:13px 14px;">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
@@ -441,6 +446,8 @@ class Component extends DCLogic {
     this._mx = window.innerWidth/2; this._my = window.innerHeight/2; this._tx = this._mx; this._ty = this._my;
     this._onMove = (e)=>{ this._tx = e.clientX; this._ty = e.clientY; };
     window.addEventListener('mousemove', this._onMove, {passive:true});
+    this._onKey = (e)=>{ if(e.key!=='Escape') return; if(this.state.gearOpen){ document.body.classList.remove('dc-modal-lock'); this.setState({gearOpen:false}); if(this._lastFocus&&this._lastFocus.focus) this._lastFocus.focus(); } else if(this.state.modalIndex!=null){ this.setState({modalIndex:null}); } };
+    window.addEventListener('keydown', this._onKey);
     const loop = ()=>{
       this._mx += (this._tx-this._mx)*0.12; this._my += (this._ty-this._my)*0.12;
       if(this._glow) this._glow.style.transform = 'translate('+this._mx+'px,'+this._my+'px) translate(-50%,-50%)';
@@ -500,7 +507,7 @@ class Component extends DCLogic {
     // safety: never trap the user behind the loader
     this._loadFail = setTimeout(()=>{ if(lo && lo.style.display!=='none'){ lo.style.display='none'; finish(); } }, 5000);
   }
-  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearTimeout(this._sfxStop); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearTimeout(this._sfxStop); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('keydown', this._onKey); document.body.classList.remove('dc-modal-lock'); if(this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
   _makeSprite(rgb){
     const s = 64, cv = document.createElement('canvas'); cv.width=cv.height=s;
@@ -665,8 +672,9 @@ class Component extends DCLogic {
       modalSrc: (this.state.modalIndex!=null && rawWorks[this.state.modalIndex]) || '',
       closeModal: ()=>this.setState({modalIndex:null}),
       gearOpen: this.state.gearOpen,
-      openGear: (e)=>{ if(e&&e.preventDefault)e.preventDefault(); this.setState({gearOpen:true}); },
-      closeGear: ()=>this.setState({gearOpen:false}),
+      openGear: (e)=>{ if(e&&e.preventDefault)e.preventDefault(); this._lastFocus=document.activeElement; document.body.classList.add('dc-modal-lock'); this.setState({gearOpen:true}); setTimeout(()=>{ if(this._gearClose) this._gearClose.focus(); }, 60); },
+      closeGear: ()=>{ document.body.classList.remove('dc-modal-lock'); this.setState({gearOpen:false}); if(this._lastFocus&&this._lastFocus.focus) setTimeout(()=>this._lastFocus.focus(),0); },
+      gearCloseRef: (el)=>{ this._gearClose=el; },
       stop: (e)=>{ if(e&&e.stopPropagation)e.stopPropagation(); },
       gear: [
         { ic:'🖱️', name:'ATK Blazing Sky X1 Ultimate', desc:'Wireless mouse · PAW3950 8K', variation:'X1 Ultimate · White', img:'', url:'https://shopee.vn/-S%E1%BA%B4N-GIAO-Chu%E1%BB%99t-kh%C3%B4ng-d%C3%A2y-ATK-Blazing-Sky-X1-Ultra-X1-Promax-X1-Pro-X1-SE-PAW3950-8K-(T%E1%BA%B7ng-k%C3%A8m-dongle-8K)-i.113486214.27651954149' },
