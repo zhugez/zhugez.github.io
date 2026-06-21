@@ -30,6 +30,9 @@
   #dcCurRing.hot{width:48px;height:48px;opacity:1;background:var(--accent-soft,rgba(167,139,250,.16));border-color:var(--accent2);}
   @media (hover:none),(pointer:coarse){.dc-cursor{display:none !important;}}
   @media (prefers-reduced-motion:reduce){.tilt{transition:none;}}
+  .mag{transition:translate .18s cubic-bezier(.2,.8,.2,1);}
+  @media (prefers-reduced-motion:reduce){.mag{transition:none;}}
+  .cmd-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;cursor:pointer;border:1px solid transparent;transition:background .12s ease,border-color .12s ease;}
   @keyframes pf-up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
   @keyframes pf-blink{0%,100%{opacity:1;}50%{opacity:0;}}
   @keyframes pf-pip{0%,100%{box-shadow:0 0 0 0 rgba(67,209,122,.5);}70%{box-shadow:0 0 0 6px rgba(67,209,122,0);}}
@@ -88,6 +91,7 @@
 
   <div ref="{{ glowRef }}" style="position:fixed;left:0;top:0;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.20),rgba(122,162,255,.10) 45%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);filter:blur(22px);will-change:transform;"></div>
 
+  <canvas ref="{{ auroraRef }}" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;display:none;opacity:.0;transition:opacity 1.2s ease;"></canvas>
   <canvas ref="{{ particleRef }}" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
 
   <div id="dcCurRing" class="dc-cursor" ref="{{ curRingRef }}"></div>
@@ -174,16 +178,16 @@
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">stats</span></div>
         <div style="display:flex;gap:8px;">
           <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
-            <div data-count="42" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">42</div>
+            <div data-count="42" data-gh="repos" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">42</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;color:var(--t3);margin-top:3px;">REPOS</div>
           </div>
           <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
-            <div data-count="21" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">21</div>
+            <div data-count="21" data-gh="followers" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">21</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;color:var(--t3);margin-top:3px;">FOLLOWERS</div>
           </div>
           <div style="flex:1;background:var(--panel);border:1px solid var(--bd2);border-radius:10px;padding:11px 4px;text-align:center;">
-            <div data-count="3" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">3</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;color:var(--t3);margin-top:3px;">YEARS</div>
+            <div data-count="28" data-gh="stars" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--t1);">28</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.08em;color:var(--t3);margin-top:3px;">STARS</div>
           </div>
         </div>
       </div>
@@ -221,7 +225,7 @@
     <div style="flex:3 1 380px;min-width:320px;display:flex;flex-direction:column;gap:18px;">
 
       <!-- about me -->
-      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+      <div id="sec-about" style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">about me</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px;">
           <span style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#b9a8f5;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.24);padding:4px 11px;border-radius:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></svg>Design</span>
@@ -236,7 +240,7 @@
       </div>
 
       <!-- socials -->
-      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+      <div id="sec-socials" style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">socials</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <a class="soc" href="#" data-discord="zhugez" title="Discord: cập nhật handle" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#7c9bff;transform:translateY(-3px);box-shadow:0 0 20px rgba(124,155,255,.5);">
@@ -263,7 +267,7 @@
       </div>
 
       <!-- now playing (custom player) -->
-      <div style="position:relative;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+      <div id="sec-music" style="position:relative;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
           <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">{{ nowLabel }}</span></div>
           <div style="display:flex;align-items:flex-end;gap:3px;height:14px;">
@@ -298,7 +302,7 @@
               <div style="font-size:1rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ trackTitle }}</div>
               <div style="font-size:0.75rem;color:var(--t2);margin-top:1px;">via YouTube · lofi</div>
             </div>
-            <button type="button" class="play-btn" onClick="{{ onToggle }}" aria-label="Play or pause" style="flex:none;width:48px;height:48px;border:none;cursor:pointer;border-radius:50%;background:linear-gradient(150deg,var(--accent),var(--accent2));color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--accent-soft,rgba(122,162,255,.4));transition:transform .15s;" style-hover="transform:scale(1.08);"><sc-if value="{{ playing }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{ paused }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px;"><path d="M8 5v14l11-7z"></path></svg></sc-if></button>
+            <button type="button" class="play-btn mag" onClick="{{ onToggle }}" aria-label="Play or pause" style="flex:none;width:48px;height:48px;border:none;cursor:pointer;border-radius:50%;background:linear-gradient(150deg,var(--accent),var(--accent2));color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--accent-soft,rgba(122,162,255,.4));transition:transform .15s;" style-hover="transform:scale(1.08);"><sc-if value="{{ playing }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{ paused }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px;"><path d="M8 5v14l11-7z"></path></svg></sc-if></button>
           </div>
           <canvas ref="{{ vizRef }}" style="width:100%;height:30px;display:block;margin-top:14px;"></canvas>
           <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
@@ -313,7 +317,7 @@
       </div>
 
       <!-- recent works -->
-      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+      <div id="sec-works" style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
           <div style="display:flex;align-items:center;gap:8px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">recent works</span></div>
           <a href="#" style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--accent2);text-decoration:none;">view all →</a>
@@ -334,7 +338,7 @@
       </div>
 
       <!-- links -->
-      <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;">
+      <div id="sec-links" style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px;"><span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span><span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">links</span></div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <a href="#" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;transition:.18s;" style-hover="border-color:var(--accent);transform:translateX(3px);">
@@ -360,6 +364,11 @@
     </div>
   </div>
 
+  <button type="button" class="mag" onClick="{{ openPalette }}" aria-label="Open command palette" style="position:fixed;left:18px;bottom:18px;z-index:55;display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:1px solid var(--bd);border-radius:99px;background:var(--card);color:var(--t2);cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);font-family:'JetBrains Mono',monospace;font-size:0.75rem;transition:transform .15s,border-color .15s,color .15s;" style-hover="transform:translateY(-2px);border-color:var(--accent);color:var(--t1);">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+    <span style="display:flex;align-items:center;gap:3px;"><kbd style="font-family:inherit;background:var(--panel);border:1px solid var(--bd2);border-radius:5px;padding:1px 5px;font-size:0.6875rem;color:var(--t3);">⌘</span><kbd style="font-family:inherit;background:var(--panel);border:1px solid var(--bd2);border-radius:5px;padding:1px 5px;font-size:0.6875rem;color:var(--t3);">K</kbd></span>
+  </button>
+
   <div style="position:fixed;right:18px;bottom:18px;z-index:55;display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
     <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
       <div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,.4);width:206px;">
@@ -372,7 +381,7 @@
         <input type="range" min="0" max="360" value="{{ hue }}" onInput="{{ onHue }}" aria-label="Accent hue" style="width:100%;height:12px;border-radius:99px;cursor:pointer;outline:none;background:linear-gradient(90deg,hsl(0 80% 65%),hsl(60 80% 65%),hsl(120 80% 65%),hsl(180 80% 65%),hsl(240 80% 65%),hsl(300 80% 65%),hsl(360 80% 65%));">
       </div>
     </sc-if>
-    <button type="button" onClick="{{ togglePanel }}" aria-label="Theme settings" style="width:50px;height:50px;border-radius:50%;border:1px solid var(--bd);cursor:pointer;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .15s;" style-hover="transform:scale(1.08) rotate(8deg);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg></button>
+    <button type="button" class="mag" onClick="{{ togglePanel }}" aria-label="Theme settings" style="width:50px;height:50px;border-radius:50%;border:1px solid var(--bd);cursor:pointer;background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .15s;" style-hover="transform:scale(1.08) rotate(8deg);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg></button>
   </div>
 
   <div style="position:fixed;right:20px;top:14px;z-index:54;cursor:pointer;transition:transform .2s ease;" style-hover="transform:scale(1.06) rotate(2deg);" title="hi!">
@@ -413,11 +422,36 @@
       </div>
     </div>
   </sc-if>
+
+  <sc-if value="{{ paletteOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePalette }}" role="dialog" aria-modal="true" aria-label="Command palette" style="position:fixed;inset:0;z-index:80;background:rgba(4,6,15,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:center;padding:14vh 20px 20px;">
+      <div onClick="{{ paletteStop }}" style="width:100%;max-width:560px;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 60px var(--accent-soft,rgba(167,139,250,.3));overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--bd);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <input ref="{{ paletteInputRef }}" onInput="{{ onPaletteInput }}" type="text" placeholder="Type a command or jump to…" aria-label="Command palette search" autocomplete="off" spellcheck="false" style="flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:'Hanken Grotesk',sans-serif;font-size:1rem;min-width:0;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t4);border:1px solid var(--bd);border-radius:6px;padding:2px 6px;">esc</span>
+        </div>
+        <div style="max-height:46vh;overflow:auto;padding:8px;">
+          <sc-for list="{{ paletteList }}" as="cmd">
+            <div class="cmd-row" onClick="{{ cmd.run }}" style="{{ cmd.rowStyle }}">
+              <span style="flex:none;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;background:var(--accent-soft,rgba(167,139,250,.16));color:var(--accent2);">{{ cmd.icon }}</span>
+              <span style="flex:1;min-width:0;font-size:0.875rem;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cmd.label }}</span>
+              <span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t4);">{{ cmd.hint }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ paletteEmpty }}"><div style="padding:18px 12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--t4);">no matches</div></sc-if>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:9px 14px;border-top:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:var(--t4);">
+          <span>↑↓ navigate</span><span>↵ select</span><span>esc close</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;artistName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ly Ngoc Vu&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;handle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;@zhugez&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;statusText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;designing · building · producing&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aboutText&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Designer, developer & music producer — building web apps, AI tools and audio, with a soft spot for cybersec. Turning ideas into things you can see, hear and use.&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;music&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;eCkMQraVsUA&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, gearOpen:false, typed:'', vibeIdx:0, trackTitle:'loading track…' };
+  state = { tick:0, playing:false, cur:0, dur:0, muted:false, modalIndex:null, theme:'dark', hue:262, panelOpen:false, gearOpen:false, typed:'', vibeIdx:0, trackTitle:'loading track…', paletteOpen:false, paletteQuery:'', paletteIdx:0 };
   _vibe(){
     const v = [
       ['cozy & creative','late-night sessions'],
@@ -476,12 +510,48 @@ class Component extends DCLogic {
         this._root.querySelectorAll(':scope > div').forEach(c=>{ c.style.perspective = '1000px'; });
         this._root.querySelectorAll(':scope > div > div').forEach(card=>{
           card.classList.add('tilt');
-          card.addEventListener('pointermove', (e)=>{ const r=card.getBoundingClientRect(); const px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5; card.style.transform='rotateX('+(-py*4.5).toFixed(2)+'deg) rotateY('+(px*5.5).toFixed(2)+'deg)'; });
-          card.addEventListener('pointerleave', ()=>{ card.style.transform='rotateX(0deg) rotateY(0deg)'; });
+          // glare sheen overlay (Apple-style)
+          if(getComputedStyle(card).position==='static') card.style.position='relative';
+          const glare=document.createElement('div');
+          glare.style.cssText='position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s ease;mix-blend-mode:screen;z-index:4;background:radial-gradient(circle 180px at 50% 0%,rgba(255,255,255,.16),transparent 60%);';
+          card.appendChild(glare);
+          card.addEventListener('pointermove', (e)=>{ const r=card.getBoundingClientRect(); const px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5; card.style.transform='rotateX('+(-py*4.5).toFixed(2)+'deg) rotateY('+(px*5.5).toFixed(2)+'deg)'; glare.style.opacity='1'; glare.style.background='radial-gradient(circle 200px at '+(e.clientX-r.left)+'px '+(e.clientY-r.top)+'px,rgba(255,255,255,.16),transparent 55%)'; });
+          card.addEventListener('pointerleave', ()=>{ card.style.transform='rotateX(0deg) rotateY(0deg)'; glare.style.opacity='0'; });
+        });
+        // magnetic buttons (composes via the `translate` property, independent of transform)
+        document.querySelectorAll('.mag').forEach(el=>{
+          el.addEventListener('pointermove', (e)=>{ const r=el.getBoundingClientRect(); const dx=(e.clientX-(r.left+r.width/2))*0.3, dy=(e.clientY-(r.top+r.height/2))*0.3; el.style.translate=dx.toFixed(1)+'px '+dy.toFixed(1)+'px'; });
+          el.addEventListener('pointerleave', ()=>{ el.style.translate='0px 0px'; });
         });
       }, 1400);
+      // click ripple on any button
+      this._onDown = (e)=>{
+        const b = e.target && e.target.closest && e.target.closest('button');
+        if(!b) return;
+        const r=b.getBoundingClientRect(); const d=Math.max(r.width,r.height)*1.25;
+        if(getComputedStyle(b).position==='static') b.style.position='relative';
+        const rip=document.createElement('span');
+        rip.style.cssText='position:absolute;border-radius:50%;pointer-events:none;z-index:5;width:'+d+'px;height:'+d+'px;left:'+(e.clientX-r.left-d/2)+'px;top:'+(e.clientY-r.top-d/2)+'px;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);transform:scale(0);opacity:.7;';
+        b.appendChild(rip);
+        requestAnimationFrame(()=>{ rip.style.transition='transform .5s ease-out,opacity .55s ease-out'; rip.style.transform='scale(1)'; rip.style.opacity='0'; });
+        setTimeout(()=>{ if(rip.parentNode) rip.parentNode.removeChild(rip); }, 580);
+      };
+      window.addEventListener('pointerdown', this._onDown, true);
     }
-    this._onKey = (e)=>{ if(e.key!=='Escape') return; if(this.state.gearOpen){ document.body.classList.remove('dc-modal-lock'); this.setState({gearOpen:false}); if(this._lastFocus&&this._lastFocus.focus) this._lastFocus.focus(); } else if(this.state.modalIndex!=null){ this.setState({modalIndex:null}); } };
+    this._onKey = (e)=>{
+      const k = e.key;
+      if((e.metaKey||e.ctrlKey) && (k==='k'||k==='K')){ e.preventDefault(); if(this.state.paletteOpen) this._closePalette(); else this._openPalette(); return; }
+      if(this.state.paletteOpen){
+        const list = this._filtered();
+        if(k==='Escape'){ e.preventDefault(); this._closePalette(); return; }
+        if(k==='ArrowDown'){ e.preventDefault(); this.setState(s=>({paletteIdx:Math.min((s.paletteIdx||0)+1, Math.max(0,list.length-1))})); return; }
+        if(k==='ArrowUp'){ e.preventDefault(); this.setState(s=>({paletteIdx:Math.max((s.paletteIdx||0)-1,0)})); return; }
+        if(k==='Enter'){ e.preventDefault(); const c=list[this.state.paletteIdx||0]; if(c&&c.run) c.run(); return; }
+        return;
+      }
+      if(k!=='Escape') return;
+      if(this.state.gearOpen){ document.body.classList.remove('dc-modal-lock'); this.setState({gearOpen:false}); if(this._lastFocus&&this._lastFocus.focus) this._lastFocus.focus(); } else if(this.state.modalIndex!=null){ this.setState({modalIndex:null}); }
+    };
     window.addEventListener('keydown', this._onKey);
     const loop = ()=>{
       this._mx += (this._tx-this._mx)*0.12; this._my += (this._ty-this._my)*0.12;
@@ -513,6 +583,7 @@ class Component extends DCLogic {
     this._startTyping();
     this._vibeT = setInterval(()=>this.setState(s=>({vibeIdx:(s.vibeIdx+1)%5})), 3800);
     this._startLoader();
+    this._ghT = setTimeout(()=>this._fetchGitHub(), 2600);
   }
   _startLoader(){
     const lo = this._loader;
@@ -566,7 +637,101 @@ class Component extends DCLogic {
     };
     typeLine();
   }
-  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearTimeout(this._sfxStop); clearTimeout(this._bootT); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('keydown', this._onKey); window.removeEventListener('pointerover', this._onOver); clearTimeout(this._tiltT); cancelAnimationFrame(this._vizRaf); if(this._vizResize) window.removeEventListener('resize', this._vizResize); document.documentElement.classList.remove('dc-cursor-on'); document.body.classList.remove('dc-modal-lock'); if(this._pResize) window.removeEventListener('resize', this._pResize); }
+  // ---- ⌘K command palette ----
+  _commands(){
+    const go = (id)=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); this._closePalette(); };
+    return [
+      { id:'theme',   label:'Toggle theme',        hint:this.state.theme==='dark'?'→ light':'→ dark', icon:'◐', run:()=>{ this.setState(s=>({theme:s.theme==='dark'?'light':'dark'})); this._closePalette(); } },
+      { id:'music',   label:this.state.playing?'Pause music':'Play music', hint:'now playing', icon:this.state.playing?'❚❚':'▶', run:()=>{ const p=this._player; if(p){ if(this.state.playing) p.pauseVideo(); else p.playVideo(); } this._closePalette(); } },
+      { id:'copy',    label:'Copy handle',          hint:this.props.handle ?? '@zhugez', icon:'⧉', run:()=>{ try{ navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@zhugez'); }catch(e){} this._closePalette(); } },
+      { id:'gear',    label:'Tech stack & setup',   hint:'gear',   icon:'🛠', run:()=>{ this._closePalette(); this._lastFocus=document.activeElement; document.body.classList.add('dc-modal-lock'); this.setState({gearOpen:true}); setTimeout(()=>{ if(this._gearClose) this._gearClose.focus(); }, 60); } },
+      { id:'accent',  label:'Accent & theme panel', hint:'settings', icon:'✦', run:()=>{ this.setState(s=>({panelOpen:!s.panelOpen})); this._closePalette(); } },
+      { id:'github',  label:'Open GitHub',          hint:'@zhugez', icon:'↗', run:()=>{ window.open('https://github.com/zhugez','_blank','noopener'); this._closePalette(); } },
+      { id:'go-about',   label:'Go to · About',        hint:'section', icon:'§', run:()=>go('sec-about') },
+      { id:'go-socials', label:'Go to · Socials',      hint:'section', icon:'§', run:()=>go('sec-socials') },
+      { id:'go-music',   label:'Go to · Now Playing',  hint:'section', icon:'§', run:()=>go('sec-music') },
+      { id:'go-works',   label:'Go to · Recent Works', hint:'section', icon:'§', run:()=>go('sec-works') },
+      { id:'go-links',   label:'Go to · Links',        hint:'section', icon:'§', run:()=>go('sec-links') }
+    ];
+  }
+  _filtered(){ const q=(this.state.paletteQuery||'').toLowerCase().trim(); const all=this._commands(); if(!q) return all; return all.filter(c=> (c.label+' '+c.hint).toLowerCase().indexOf(q)>=0); }
+  _openPalette(){ this.setState({paletteOpen:true, paletteQuery:'', paletteIdx:0}); setTimeout(()=>{ if(this._paletteInput){ this._paletteInput.value=''; this._paletteInput.focus(); } }, 40); }
+  _closePalette(){ this.setState({paletteOpen:false}); }
+  // ---- live GitHub data ----
+  _animCount(el, end){
+    if(!el) return;
+    const start = parseFloat(String(el.textContent).replace(/[^0-9.]/g,''))||0;
+    if(!window.anime){ el.textContent = end; return; }
+    const obj={v:start};
+    window.anime({ targets:obj, v:end, duration:1200, easing:'easeOutExpo', round:1, update:()=>{ el.textContent = obj.v; } });
+  }
+  _fetchGitHub(){
+    if(typeof fetch!=='function') return;
+    const set=(k,v)=>{ const el=document.querySelector('[data-gh="'+k+'"]'); if(el){ el.setAttribute('data-count', v); this._animCount(el, v); } };
+    fetch('https://api.github.com/users/zhugez').then(r=>r.ok?r.json():null).then(u=>{
+      if(!u) return;
+      if(typeof u.public_repos==='number') set('repos', u.public_repos);
+      if(typeof u.followers==='number') set('followers', u.followers);
+    }).catch(()=>{});
+    fetch('https://api.github.com/users/zhugez/repos?per_page=100&sort=updated').then(r=>r.ok?r.json():null).then(rs=>{
+      if(!Array.isArray(rs)) return;
+      const stars = rs.reduce((a,b)=>a+((b&&b.stargazers_count)||0),0);
+      set('stars', stars);
+    }).catch(()=>{});
+  }
+  // ---- WebGL aurora mesh background ----
+  _hslRgb(h,s,l){ const a=s*Math.min(l,1-l); const f=(n)=>{ const k=(n+h*12)%12; return l-a*Math.max(-1,Math.min(k-3,Math.min(9-k,1))); }; return [f(0),f(8),f(4)]; }
+  _initAurora(cv){
+    if(this._rm) return; // reduced motion: keep static particle bg
+    let gl=null;
+    try{ gl = cv.getContext('webgl') || cv.getContext('experimental-webgl'); }catch(e){}
+    if(!gl) return; // no WebGL: particle canvas remains the fallback
+    const vs='attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
+    const fs=[
+      'precision highp float;',
+      'uniform vec2 u_res; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_a; uniform vec3 u_b;',
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      'float noise(vec2 p){vec2 i=floor(p),f=fract(p);float a=hash(i),b=hash(i+vec2(1.0,0.0)),c=hash(i+vec2(0.0,1.0)),d=hash(i+vec2(1.0,1.0));vec2 u=f*f*(3.0-2.0*f);return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;}',
+      'float fbm(vec2 p){float v=0.0,a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.02;a*=0.5;}return v;}',
+      'void main(){vec2 uv=gl_FragCoord.xy/u_res.xy;vec2 p=uv;p.x*=u_res.x/u_res.y;',
+      'float t=u_time*0.05;',
+      'vec2 m=(u_mouse/u_res-0.5);',
+      'float f=fbm(p*2.4+vec2(t,t*0.6)+m*0.7);',
+      'f+=0.5*fbm(p*4.2-vec2(t*0.8,t));',
+      'float band=smoothstep(0.25,1.05,f);',
+      'vec3 col=mix(u_a,u_b,clamp(f*1.1,0.0,1.0));',
+      'col*=band;',
+      'float vig=smoothstep(1.25,0.2,length(uv-0.5));',
+      'col*=vig;',
+      'col+=pow(band,2.0)*0.45*u_b;',
+      'float al=clamp(band*0.85,0.0,0.8);',
+      'gl_FragColor=vec4(col,al);}'
+    ].join('\n');
+    const sh=(type,src)=>{ const o=gl.createShader(type); gl.shaderSource(o,src); gl.compileShader(o); return o; };
+    const prog=gl.createProgram(); gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+    const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(prog,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    const uRes=gl.getUniformLocation(prog,'u_res'), uTime=gl.getUniformLocation(prog,'u_time'), uMouse=gl.getUniformLocation(prog,'u_mouse'), uA=gl.getUniformLocation(prog,'u_a'), uB=gl.getUniformLocation(prog,'u_b');
+    const dpr=Math.min(window.devicePixelRatio||1, 1.5);
+    const resize=()=>{ cv.width=Math.floor(window.innerWidth*dpr); cv.height=Math.floor(window.innerHeight*dpr); gl.viewport(0,0,cv.width,cv.height); };
+    resize(); this._auroraResize=resize; window.addEventListener('resize', resize, {passive:true});
+    cv.style.display='block'; requestAnimationFrame(()=>{ cv.style.opacity='1'; });
+    const start=performance.now();
+    const draw=()=>{
+      const hue=this.state.hue;
+      const a=this._hslRgb(hue/360, 0.62, 0.42), b=this._hslRgb(((hue+40)%360)/360, 0.72, 0.6);
+      gl.uniform2f(uRes, cv.width, cv.height);
+      gl.uniform1f(uTime, (performance.now()-start)/1000);
+      gl.uniform2f(uMouse, (this._tx||0)*dpr, (window.innerHeight-(this._ty||0))*dpr);
+      gl.uniform3f(uA, a[0],a[1],a[2]); gl.uniform3f(uB, b[0],b[1],b[2]);
+      gl.drawArrays(gl.TRIANGLES,0,3);
+      this._auroraRaf=requestAnimationFrame(draw);
+    };
+    draw();
+  }
+  componentWillUnmount(){ clearInterval(this._clk); clearInterval(this._poll); clearTimeout(this._animT); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._loadFail); clearTimeout(this._sfxStop); clearTimeout(this._bootT); clearInterval(this._vibeT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('keydown', this._onKey); window.removeEventListener('pointerover', this._onOver); clearTimeout(this._tiltT); clearTimeout(this._ghT); cancelAnimationFrame(this._vizRaf); cancelAnimationFrame(this._auroraRaf); if(this._auroraResize) window.removeEventListener('resize', this._auroraResize); if(this._onDown) window.removeEventListener('pointerdown', this._onDown, true); if(this._vizResize) window.removeEventListener('resize', this._vizResize); document.documentElement.classList.remove('dc-cursor-on'); document.body.classList.remove('dc-modal-lock'); if(this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s){ if(!s || isNaN(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
   _initViz(cv){
     const ctx = cv.getContext('2d');
@@ -840,6 +1005,24 @@ class Component extends DCLogic {
       },
       particleRef: (el)=>{ if(el && !el._init){ el._init=true; this._initParticles(el); } },
       pageRef: (el)=>{ this._page = el; if(el){ el.setAttribute('data-theme', this.state.theme); el.style.setProperty('--accent', acc.c); el.style.setProperty('--accent2', acc.c2); el.style.setProperty('--accent-soft', acc.soft); el.style.setProperty('--accent-ring', 'hsla('+hue+',72%,68%,.35)'); } },
+      auroraRef: (el)=>{ if(el && !el._init){ el._init=true; this._initAurora(el); } },
+      paletteOpen: this.state.paletteOpen,
+      openPalette: ()=>this._openPalette(),
+      closePalette: ()=>this._closePalette(),
+      paletteStop: (e)=>{ if(e&&e.stopPropagation)e.stopPropagation(); },
+      paletteInputRef: (el)=>{ this._paletteInput=el; },
+      onPaletteInput: (e)=>{ this.setState({paletteQuery:e.target.value, paletteIdx:0}); },
+      paletteEmpty: this.state.paletteOpen && this._filtered().length===0,
+      paletteList: (function(self){
+        const pIdx = self.state.paletteIdx||0;
+        const base="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;cursor:pointer;border:1px solid transparent;";
+        const on=base+"background:var(--accent-soft,rgba(167,139,250,.16));border-color:var(--accent);";
+        return self._filtered().map((c,i)=>({
+          label:c.label, hint:c.hint, icon:c.icon,
+          rowStyle: i===pIdx ? on : base,
+          run:(ev)=>{ if(ev&&ev.stopPropagation)ev.stopPropagation(); if(c.run) c.run(); }
+        }));
+      })(this),
       panelOpen: this.state.panelOpen,
       togglePanel: ()=>this.setState(s=>({panelOpen:!s.panelOpen})),
       setDark: ()=>this.setState({theme:'dark'}),
