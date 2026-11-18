@@ -836,7 +836,6 @@ export default class Profile extends Component<any, any> {
                   <span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span>
                   <span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">zhuge in tech</span>
                 </div>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--accent2);">domains · lyngocvu.tech</span>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <a class="soc" href="https://sec.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ff5555;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,85,85,.5);">
