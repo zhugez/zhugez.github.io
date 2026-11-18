@@ -231,6 +231,7 @@ export default class Profile extends Component<any, any> {
       { id: 'github', label: 'Open GitHub', hint: '@zhugez', icon: '↗', run: () => { window.open('https://github.com/zhugez', '_blank', 'noopener'); this._closePalette(); } },
       { id: 'go-about', label: 'Go to · About', hint: 'section', icon: '§', run: () => go('sec-about') },
       { id: 'go-socials', label: 'Go to · Socials', hint: 'section', icon: '§', run: () => go('sec-socials') },
+      { id: 'go-tech', label: 'Go to · Zhuge in Tech', hint: 'section', icon: '§', run: () => go('sec-tech') },
       { id: 'go-music', label: 'Go to · Now Playing', hint: 'section', icon: '§', run: () => go('sec-music') },
       { id: 'go-works', label: 'Go to · Recent Works', hint: 'section', icon: '§', run: () => go('sec-works') },
       { id: 'go-links', label: 'Go to · Links', hint: 'section', icon: '§', run: () => go('sec-links') }
@@ -824,6 +825,47 @@ export default class Profile extends Component<any, any> {
                 <a class="soc" href="mailto:dezzhuge@gmail.com" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#43d17a;transform:translateY(-3px);box-shadow:0 0 20px rgba(67,209,122,.5);">
                   <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(67,209,122,.14);display:flex;align-items:center;justify-content:center;color:#9ff0d0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span>
                   <span style="font-size:0.875rem;color:var(--t1);font-weight:500;">Email</span>
+                </a>
+              </div>
+            </div>
+
+            {/* zhuge in tech */}
+            <div id="sec-tech" style="background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;scroll-margin-top:18px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="width:4px;height:13px;border-radius:2px;background:linear-gradient(var(--accent),var(--accent2));"></span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;">zhuge in tech</span>
+                </div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--accent2);">domains · lyngocvu.tech</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <a class="soc" href="https://sec.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ff5555;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,85,85,.5);">
+                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,85,85,.14);display:flex;align-items:center;justify-content:center;color:#ff8585;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Security & VR</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t3);">sec.lyngocvu.tech</div>
+                  </div>
+                </a>
+                <a class="soc" href="https://dev.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#5ee0ff;transform:translateY(-3px);box-shadow:0 0 20px rgba(94,224,255,.5);">
+                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(94,224,255,.14);display:flex;align-items:center;justify-content:center;color:#9fe9ff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Software & Dev</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t3);">dev.lyngocvu.tech</div>
+                  </div>
+                </a>
+                <a class="soc" href="https://editor.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ffd166;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,209,102,.5);">
+                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,209,102,.14);display:flex;align-items:center;justify-content:center;color:#ffe08a;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Writing & Blogs</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t3);">editor.lyngocvu.tech</div>
+                  </div>
+                </a>
+                <a class="soc" href="https://research.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#c9b6ff;transform:translateY(-3px);box-shadow:0 0 20px rgba(201,182,255,.5);">
+                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(201,182,255,.14);display:flex;align-items:center;justify-content:center;color:#d8c9ff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Research & Lab</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t3);">research.lyngocvu.tech</div>
+                  </div>
                 </a>
               </div>
             </div>
