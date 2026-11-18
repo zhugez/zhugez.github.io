@@ -854,9 +854,9 @@ export default class Profile extends Component<any, any> {
                   </div>
                 </a>
                 <a class="soc" href="https://editor.lyngocvu.tech" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;transition:.18s;" style-hover="border-color:#ffd166;transform:translateY(-3px);box-shadow:0 0 20px rgba(255,209,102,.5);">
-                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,209,102,.14);display:flex;align-items:center;justify-content:center;color:#ffe08a;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>
+                  <span class="soc-ic" style="flex:none;width:32px;height:32px;border-radius:8px;background:rgba(255,209,102,.14);display:flex;align-items:center;justify-content:center;color:#ffe08a;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg></span>
                   <div style="min-width:0;">
-                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Writing & Blogs</div>
+                    <div style="font-size:0.875rem;color:var(--t1);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Video Editor & Designer</div>
                     <div style="font-family:'JetBrains Mono',monospace;font-size:0.6875rem;color:var(--t3);">editor.lyngocvu.tech</div>
                   </div>
                 </a>
