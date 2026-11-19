@@ -5,4 +5,5 @@ import preact from '@astrojs/preact';
 export default defineConfig({
   site: 'https://zhugez.github.io',
   integrations: [preact()],
+  devToolbar: { enabled: false },
 });
