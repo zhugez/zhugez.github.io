@@ -1,13 +1,8 @@
 import { Component } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
-import ROLL from '../data/soft-static.json';
 import { mountAurora } from './aurora';
+import type { VinylState } from './room-feature';
 
-const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const noteName = (m: number) => NOTES[m % 12] + (Math.floor(m / 12) - 1);
-
-const BAR = Number(ROLL.chords[1][0]);
-const MELODY = (ROLL.notes as number[][]).filter((n) => n[1] < BAR * 0.9).map((n) => ({ t: n[0], name: noteName(n[2]).toLowerCase() }));
 function PlaybackIcon({ playing }: { playing: boolean }) {
   return <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
     {playing ? <path d="M7 5h3v14H7zm7 0h3v14h-3z" /> : <path d="M8 5v14l11-7z" />}
@@ -32,7 +27,7 @@ const GEAR = [
 const MAKE = [
   ['Interfaces', 'Product UI, portfolios and small web apps that feel quick in the hand and calm to the eye.', 'design · web · motion'],
   ['Software', 'Front to back: Astro, Preact, TypeScript, Python. Built lean, shipped often, measured after.', 'dev · tooling · perf'],
-  ['Sound', 'A MIDI controller, a pair of monitors and a record player. Tap the deck to hear Soft Static.', 'music · audio · sfx'],
+  ['Sound', 'A MIDI controller, a pair of monitors and a record player. Put an Adele · 30 LP on the deck to play it.', 'music · audio · sfx'],
   ['Research', 'Tiny AI models and security work: training, testing, and taking things apart to see how they fail.', 'ai · cyber · lab']
 ];
 const STEPS = [
@@ -80,18 +75,17 @@ declare global {
 }
 
 export default class Profile extends Component<any, any> {
-  state = { playing: false, cur: 0, dur: 0, muted: false, modalIndex: null, theme: 'dark', hue: 226, panelOpen: false, gearOpen: false, typed: '', paletteOpen: false, paletteQuery: '', paletteIdx: 0, boot: 0, say: 'hi! ✦', poke: 0, zone: -1, musicOpen: false, musicError: '' };
+  state = { modalIndex: null, theme: 'dark', hue: 226, panelOpen: false, gearOpen: false, typed: '', paletteOpen: false, paletteQuery: '', paletteIdx: 0, boot: 0, say: 'hi! ✦', poke: 0, zone: -1, musicOpen: false, vinyl: null as VinylState | null, mounted: false };
 
   // ---- mutable instance refs / runtime handles ----
-  _audio: HTMLAudioElement | null = null;
   _root: any; _page: any; _curDot: any; _curRing: any;
   _sfx: any; _loading = true;
   _paletteInput: any; _gearClose: any; _lastFocus: any;
-  _fine = false; _rm = false; _tick: any; _ni = -1; _room: any; _roomIO: any; _aurora: any;
-  _float: HTMLElement[] = []; _fi = 0;
+  _fine = false; _rm = false; _lyricWords: HTMLElement[] = []; _lyricKey = ''; _lyricHidden = false; _room: any;
+  _float: HTMLElement[] = []; _fi = 0; _sung = 0; _roomIO: any; _aurora: any;
   _tx = 0; _ty = 0; _crx = 0; _cry = 0;
   _typeT: any; _loadT: any; _sfxStop: any;
-  _bootT: any; _ghT: any; _raf: any; _pRaf: any;
+  _bootT: any; _mascot: any; _mascotEl: any; _mascotLoading = false; _ghT: any; _raf: any; _pRaf: any;
   _tiltT: any; _onMove: any; _onKey: any; _onOver: any; _onDown: any;
   _pResize: any;
 
@@ -121,6 +115,7 @@ export default class Profile extends Component<any, any> {
     step();
   }
   componentDidMount() {
+    this.setState({ mounted: true });
     try { this.setState({ musicOpen: localStorage.getItem('zhugez.music.open') === '1' }); } catch {}
     // custom cursor follow
     this._tx = window.innerWidth / 2; this._ty = window.innerHeight / 2; this._crx = this._tx; this._cry = this._ty;
@@ -226,6 +221,8 @@ export default class Profile extends Component<any, any> {
       this.setState({ boot: 1 });
       this._bootT = setTimeout(() => {
         this.setState({ boot: 2 });
+        const idle = (window as any).requestIdleCallback as ((cb: () => void, o: { timeout: number }) => number) | undefined;
+        if (idle) idle(this._loadMascot, { timeout: 2500 }); else setTimeout(this._loadMascot, 600);
       }, 1000);
     }, hold);
   }
@@ -234,7 +231,7 @@ export default class Profile extends Component<any, any> {
     const go = (id: string) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); this._closePalette(); };
     return [
       { id: 'theme', label: 'Toggle theme', hint: this.state.theme === 'dark' ? '→ light' : '→ dark', icon: '◐', run: () => { this.setState((s: any) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })); this._closePalette(); } },
-      { id: 'music', label: this.state.playing ? 'Pause music' : 'Play music', hint: 'now playing', icon: this.state.playing ? '❚❚' : '▶', run: () => { this.onToggle(); this._closePalette(); } },
+      ...(this.state.vinyl ? [{ id: 'music', label: this.state.vinyl.playing ? 'Pause music' : 'Play music', hint: 'now playing', icon: this.state.vinyl.playing ? '❚❚' : '▶', run: () => { this.onPlayer(); this._closePalette(); } }] : []),
       { id: 'copy', label: 'Copy handle', hint: this.props.handle ?? '@zhugez', icon: '⧉', run: () => { try { navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@zhugez'); } catch (e) {} this._closePalette(); } },
       { id: 'gear', label: 'Tech stack & setup', hint: 'gear', icon: '🛠', run: () => { this._closePalette(); this._lastFocus = document.activeElement; document.body.classList.add('dc-modal-lock'); this.setState({ gearOpen: true }); setTimeout(() => { if (this._gearClose) this._gearClose.focus(); }, 60); } },
       { id: 'accent', label: 'Accent & theme panel', hint: 'settings', icon: '✦', run: () => { this.setState((s: any) => ({ panelOpen: !s.panelOpen })); this._closePalette(); } },
@@ -266,57 +263,73 @@ export default class Profile extends Component<any, any> {
       set('stars', stars);
     }).catch(() => {});
   }
-  componentWillUnmount() { if (this._aurora) this._aurora(); if (this._roomIO) this._roomIO.disconnect(); if (this._room) this._room.dispose(); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._sfxStop); clearTimeout(this._bootT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('keydown', this._onKey); window.removeEventListener('pointerover', this._onOver); clearTimeout(this._tiltT); clearTimeout(this._ghT); cancelAnimationFrame(this._tick); if (this._onDown) window.removeEventListener('pointerdown', this._onDown, true); document.documentElement.classList.remove('dc-cursor-on'); document.body.classList.remove('dc-modal-lock'); if (this._pResize) window.removeEventListener('resize', this._pResize); }
+  componentWillUnmount() { if (this._aurora) this._aurora(); if (this._roomIO) this._roomIO.disconnect(); if (this._room) this._room.dispose(); if (this._mascot) this._mascot.dispose(); clearTimeout(this._typeT); clearTimeout(this._loadT); clearTimeout(this._sfxStop); clearTimeout(this._bootT); cancelAnimationFrame(this._raf); cancelAnimationFrame(this._pRaf); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('keydown', this._onKey); window.removeEventListener('pointerover', this._onOver); clearTimeout(this._tiltT); clearTimeout(this._ghT); if (this._onDown) window.removeEventListener('pointerdown', this._onDown, true); document.documentElement.classList.remove('dc-cursor-on'); document.body.classList.remove('dc-modal-lock'); if (this._pResize) window.removeEventListener('resize', this._pResize); }
   fmt(s: number) { if (!s || isNaN(s)) return '0:00'; const m = Math.floor(s / 60), x = Math.floor(s % 60); return m + ':' + String(x).padStart(2, '0'); }
-  _initAudio(el: HTMLAudioElement | null) {
-    if (!el || this._audio === el) return;
-    this._audio = el;
-    el.volume = .7;
-    const update = (exact = false) => {
-      const t = el.currentTime;
-      let ni = -1;
-      for (let i = 0; i < MELODY.length && MELODY[i].t <= t; i++) ni = i;
-      if (exact || ni !== this._ni || Math.floor(t) !== Math.floor(this.state.cur)) {
-        if (!exact && ni >= 0 && ni !== this._ni) this._floatNote(MELODY[ni].name.toUpperCase());
-        this._ni = ni;
-        this.setState({ cur: t });
-      }
-    };
-    const tick = () => {
-      update();
-      if (!el.paused) this._tick = requestAnimationFrame(tick);
-    };
-    el.addEventListener('playing', () => {
-      this.setState({ playing: true, musicError: '' });
-      cancelAnimationFrame(this._tick);
-      tick();
-    });
-    el.addEventListener('pause', () => {
-      cancelAnimationFrame(this._tick);
-      this.setState({ playing: false });
-      update(true);
-    });
-    el.addEventListener('seeked', () => update(true));
-    const setDuration = () => this.setState({ dur: Number.isFinite(el.duration) ? el.duration : 0 });
-    el.addEventListener('durationchange', setDuration);
-    el.addEventListener('error', () => this.setState({ playing: false, musicError: 'The track could not load.' }));
-    setDuration();
-  }
-  audioRef = (el: HTMLAudioElement | null) => { this._initAudio(el); };
   floatRef = (el: HTMLElement | null) => {
     if (!el || this._float.length) return;
     this._float = Array.from({ length: 8 }, () => el.appendChild(document.createElement('span')));
     el.addEventListener('animationend', (e) => (e.target as HTMLElement).classList.remove('on'));
   };
-  _floatNote(name: string) {
+  _floatLyric(words: string[], key: string) {
     const s = this.state;
-    if (this._rm || document.hidden || s.modalIndex != null || s.gearOpen || s.paletteOpen) return;
-    const n = this._float[this._fi++ % this._float.length];
-    if (!n || n.classList.contains('on')) return;
-    const r = Math.random;
-    n.textContent = name;
-    n.style.cssText = '--x:' + (24 + r() * 250) + 'px;--dx:' + (r() * 80 - 56) + 'px;--rise:' + (26 + r() * 30) + 'vh;--size:' + (1.1 + r() * 1.1) + 'rem;--o:' + (0.7 + r() * 0.3) + ';--d:' + (2600 + r() * 1200) + 'ms;--c:var(--' + (this._fi % 2 ? 'accent' : 'accent2') + ')';
-    n.classList.add('on');
+    this._clearLyrics();
+    this._lyricKey = key;
+    this._lyricHidden = document.hidden || s.modalIndex != null || s.gearOpen || s.paletteOpen;
+    if (this._lyricHidden || !words.length) return;
+    // ponytail: three chunks at most, each a third of the line
+    const size = words.length <= 6 ? words.length : Math.ceil(words.length / 3);
+    for (let c = 0; c < 3 && c * size < words.length; c++) {
+      const chunk = words.slice(c * size, c * size + size);
+      const n = this._float[this._fi++ % this._float.length];
+      if (!n) break;
+      n.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+      n.classList.remove('on');
+      void n.offsetWidth;
+      n.replaceChildren(...chunk.flatMap((word, i) => {
+        const b = document.createElement('b');
+        b.textContent = word;
+        b.style.setProperty('--word-delay', i * 22 + 'ms');
+        this._lyricWords.push(b);
+        return i ? [' ', b] : [b];
+      }));
+      const lane = (this._fi + c) % 3;
+      const start = c * 300;
+      const duration = 2000 + chunk.length * 110;
+      const id = key + ':' + this._fi;
+      n.dataset.lyricId = id;
+      n.dataset.lyricKey = key;
+      n.dataset.lyricChunk = String(c);
+      n.className = 'lyric on' + (this._rm ? ' still' : '');
+      n.style.cssText = `--x:${16 + lane * 26}px;--dx:-18px;--rise:20vh;--base:${14 + lane * 7}vh;--start:${start}ms;--o:.98;--d:${duration}ms;--c:var(--accent)`;
+      if (this._rm) window.setTimeout(() => { if (n.dataset.lyricId === id) n.classList.remove('on'); }, start + duration);
+    }
+    this._sung = 0;
+  }
+  _clearLyrics() {
+    this._float.forEach((line) => {
+      if (!line.classList.contains('lyric')) return;
+      line.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+      line.classList.remove('on');
+    });
+    this._lyricWords = [];
+    this._lyricKey = '';
+    this._lyricHidden = false;
+  }
+  _sing(sung: number) {
+    const words = this._lyricWords;
+    if (!words.length) return;
+    words.forEach((word, i) => word.classList.toggle('sung', i < sung));
+    if (sung < this._sung) words.forEach((word) => { word.getAnimations().forEach((animation) => animation.cancel()); word.style.removeProperty('transform'); word.style.removeProperty('text-shadow'); });
+    if (sung > this._sung) {
+      const active = words[Math.min(sung, words.length) - 1];
+      if (active && !this._rm) active.animate([
+        { transform: 'translateY(5px) scale(.88)', textShadow: '0 0 0 transparent' },
+        { transform: 'translateY(-4px) scale(1.16)', textShadow: '0 0 22px var(--accent)' },
+        { transform: 'translateY(0) scale(1)', textShadow: '0 0 12px var(--accent)' },
+      ], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
+      else if (active) { active.style.transform = 'none'; active.style.textShadow = '0 0 12px var(--accent)'; }
+    }
+    this._sung = sung;
   }
   auroraRef = (el: any) => { if (el && !this._aurora) this._aurora = mountAurora(el, () => this.state.hue, () => [this._tx || 0, this._ty || 0]); };
   roomRef = (el: any) => {
@@ -327,11 +340,19 @@ export default class Profile extends Component<any, any> {
       import('./room').then((m) => {
         if (!el.isConnected) return;
         this._room = m.mountRoom(el, {
-          get: () => ({ playing: this.state.playing, active: this.state.zone, note: MELODY[this._ni]?.name ?? '' }),
-          onToggle: this.onToggle,
+          get: () => ({ active: this.state.zone }),
           onHover: (z) => this.setState({ zone: z }),
+                    onVinyl: (vinyl) => {
+            if (vinyl?.line && vinyl.lyricKey !== this._lyricKey) this._floatLyric(vinyl.words ?? [], vinyl.lyricKey ?? '');
+            if (!vinyl?.line) this._clearLyrics();
+            this._sing(vinyl?.line && !this._lyricHidden ? vinyl.sung ?? 0 : 0);
+            this.setState({ vinyl });
+          },
           art: (window.ARISE_WORKS || [])[0],
-          gear: GEAR.map((g) => g.name)
+          gear: GEAR.map((g) => g.name),
+          details: Object.fromEntries(GEAR.map((g) => [g.name, g.desc])),
+          works: window.ARISE_WORKS || [],
+          links: [...document.querySelectorAll<HTMLAnchorElement>('#sec-tech a, #sec-socials a, #sec-links a')].filter((a) => /^(https?|mailto):/.test(a.getAttribute('href') || '')).map((a) => [[...a.querySelectorAll('div, span')].map((e) => e.childElementCount ? '' : e.textContent.trim()).find(Boolean) || a.href, a.href] as [string, string])
         });
       }).catch(() => el.classList.add('room-off'));
     }, { rootMargin: '600px' });
@@ -417,7 +438,18 @@ export default class Profile extends Component<any, any> {
   };
   onCopy = () => { try { navigator.clipboard && navigator.clipboard.writeText(this.props.handle ?? '@zhugez'); } catch (e) {} };
   closeModal = () => this.setState({ modalIndex: null });
+  mascotRef = (el: any) => { this._mascotEl = el; };
+  _loadMascot = () => {
+    const el = this._mascotEl;
+    if (!el || this._mascot || this._mascotLoading) return;
+    this._mascotLoading = true;
+    import('./mascot3d').then((m) => {
+      if (!el.isConnected) return;
+      this._mascot = m.mountMascot(el, { base: new URL(import.meta.env.BASE_URL, location.origin), get: () => ({ playing: !!this.state.vinyl?.playing }) });
+    }).catch(() => {});
+  };
   onMascot = () => {
+    if (this._mascot) this._mascot.poke();
     this._playSfx().catch(() => {});
     const lines = ['hi! ✦', 'konichiwa~ ✦', 'ouch >_<', 'hehe ✦', 'try ⌘K ✦', 'play a song? ♪'];
     // always a different line than the one showing
@@ -434,20 +466,9 @@ export default class Profile extends Component<any, any> {
   closePalette = () => this._closePalette();
   paletteStop = (e: any) => { if (e && e.stopPropagation) e.stopPropagation(); };
   onPaletteInput = (e: any) => { this.setState({ paletteQuery: e.target.value, paletteIdx: 0 }); };
-  onToggle = () => {
-    const audio = this._audio;
-    if (!audio) return;
-    if (audio.paused) {
-      audio.play().catch((error: DOMException) => {
-        if (error.name !== 'AbortError') this.setState({ musicError: 'Playback could not start. Try again.' });
-      });
-    } else audio.pause();
-  };
-  onSeek = (event: Event) => {
-    if (!this._audio || !this.state.dur) return;
-    this._audio.currentTime = (event.currentTarget as HTMLInputElement).valueAsNumber;
-    this.setState({ cur: this._audio.currentTime });
-  };
+  _deck() { return this.state.vinyl ? this._room?.deck() : undefined; }
+  onPlayer = () => this._deck()?.toggle();
+  onSeek = (event: Event) => this._deck()?.seek((event.currentTarget as HTMLInputElement).valueAsNumber);
   toggleMusicBadge = () => {
     const musicOpen = this.state.panelOpen || !this.state.musicOpen;
     this.setState({ musicOpen, panelOpen: false });
@@ -459,11 +480,13 @@ export default class Profile extends Component<any, any> {
     heading?.focus({ preventScroll: true });
     heading?.scrollIntoView({ behavior: this._rm ? 'auto' : 'smooth', block: 'start' });
   };
-  onRestart = () => { const a = this._audio; if (a) a.currentTime = 0; };
-  onMute = () => { const a = this._audio; if (!a) return; a.muted = !a.muted; this.setState({ muted: a.muted }); };
+  onRestart = () => this._deck()?.restart();
+  onMute = () => this._deck()?.mute();
 
   render() {
-    const frac = this.state.dur ? Math.min(1, this.state.cur / this.state.dur) : 0;
+    const vinyl = this.state.vinyl;
+    const cur = vinyl?.cur ?? 0, dur = vinyl?.dur ?? 0;
+    const frac = dur ? Math.min(1, cur / dur) : 0;
     const hue = this.state.hue, boot = this.state.boot;
     const h2 = (hue + 28) % 360;
     const acc = {
@@ -472,7 +495,7 @@ export default class Profile extends Component<any, any> {
     };
     const pal = { p: acc.c, ring: 'conic-gradient(from 0deg,' + acc.c + ',' + acc.c2 + ',' + acc.c + ')' };
     this._applyTheme(this._page);
-    const rawWorks = (typeof window !== 'undefined' && window.ARISE_WORKS) ? window.ARISE_WORKS : [];
+    const rawWorks = (this.state.mounted && window.ARISE_WORKS) || [];
     const works = rawWorks.map((src: string, i: number) => ({ src, n: String(i + 1).padStart(2, '0'), open: () => this.setState({ modalIndex: i }) }));
     const modalSrc = (this.state.modalIndex != null && rawWorks[this.state.modalIndex]) || '';
     const gear = GEAR;
@@ -485,11 +508,11 @@ export default class Profile extends Component<any, any> {
     const say = boot < 2 ? 'konichiwa~ ✦' : this.state.say, poke = this.state.poke;
     const cursorStyle = { display: 'inline-block', width: '7px', height: '13px', background: pal.p, borderRadius: '1px', animation: 'pf-blink 1.1s steps(1) infinite' };
     const hueLabel = hue + '°';
-    const { playing, muted, musicError } = this.state;
     const musicOpen = this.state.musicOpen && !this.state.panelOpen;
-    const action = playing ? 'Pause Soft Static' : 'Play Soft Static';
-    const note = MELODY[this._ni]?.name.toUpperCase();
-    const curLabel = this.fmt(this.state.cur), durLabel = this.fmt(this.state.dur);
+    const curLabel = this.fmt(cur), durLabel = this.fmt(dur);
+    const live = !!vinyl?.playing;
+    const title = vinyl?.title ?? '';
+    const playerAction = (live ? 'Pause ' : 'Play ') + title;
     const panelOpen = this.state.panelOpen, gearOpen = this.state.gearOpen, paletteOpen = this.state.paletteOpen;
     const btnFlex = { fontFamily: "'JetBrains Mono',monospace", fontSize: '12px', fontWeight: 600, cursor: 'pointer', borderRadius: '10px', padding: '8px 0', flex: 1, transition: '.15s' };
     const darkBtnStyle = Object.assign({}, btnFlex, this.state.theme === 'dark' ? { border: '1px solid ' + acc.c, background: acc.soft, color: 'var(--t1)' } : { border: '1px solid var(--bd)', background: 'transparent', color: 'var(--t2)' });
@@ -507,7 +530,6 @@ export default class Profile extends Component<any, any> {
     return (
       <div ref={this.pageRef} class="page">
 
-        <audio ref={this.audioRef} src="media/soft-static.mp3" preload="metadata" loop />
         <audio ref={this.sfxRef} src="media/konichiwa.mp3" preload="auto"></audio>
         {boot < 2 && <div class="boot" style={boot ? 'opacity:0;pointer-events:none;' : ''}></div>}
 
@@ -586,9 +608,9 @@ export default class Profile extends Component<any, any> {
           </section>
           </div>
 
-          <button type="button" class={'mascot' + (boot === 0 ? ' intro' : '') + (boot < 2 ? ' greet' : '') + (playing ? ' dance' : '')} onClick={this.onMascot}>
+          <button type="button" class={'mascot' + (boot === 0 ? ' intro' : '') + (boot < 2 ? ' greet' : '') + (live ? ' dance' : '')} onClick={this.onMascot}>
             <span class="mascot-bob">
-              <span class={'mascot-pop' + (poke ? (poke % 2 ? ' pa' : ' pb') : '')}><img src="media/mascot-cut.webp" alt="mascot" /></span>
+              <span class={'mascot-pop' + (poke ? (poke % 2 ? ' pa' : ' pb') : '')}><span class="mascot-3d" ref={this.mascotRef}></span><img src="media/mascot-3d.webp" alt="mascot" /></span>
               <span class="say">{say}</span>
             </span>
           </button>
@@ -612,12 +634,6 @@ export default class Profile extends Component<any, any> {
                   <Rise as="h3" chars class="make-t" text={m[0]} />
                   <Rise class="make-d" text={m[1]} />
                   <span class="make-tags">{m[2]}</span>
-                  {i === 2 && <div class="room-track">
-                    <button type="button" class="room-play" onClick={this.onToggle} aria-label={action}>
-                      <PlaybackIcon playing={playing} /><span>{playing ? 'Pause' : 'Play'} <strong>Soft Static</strong></span>
-                    </button>
-                    {musicError && <small role="status">{musicError}</small>}
-                  </div>}
                 </li>
               ))}
             </ol>
@@ -764,28 +780,27 @@ export default class Profile extends Component<any, any> {
           <span style="display:flex;align-items:center;gap:3px;"><kbd style="font-family:inherit;background:var(--panel);border:1px solid var(--bd2);border-radius:5px;padding:1px 5px;font-size:0.6875rem;color:var(--t3);">⌘</kbd><kbd style="font-family:inherit;background:var(--panel);border:1px solid var(--bd2);border-radius:5px;padding:1px 5px;font-size:0.6875rem;color:var(--t3);">K</kbd></span>
         </button>
 
-        <aside class={'music-badge' + (playing ? ' is-playing' : '')} style={'--track-progress:' + frac * 100 + '%'} aria-label="Music controls" hidden={boot < 2 || !!modalSrc || gearOpen || paletteOpen}>
-          <button type="button" class="music-record" onClick={this.toggleMusicBadge} aria-expanded={musicOpen} aria-controls="music-options" aria-label="Soft Static player" title={musicOpen ? 'Hide player' : 'Show player'}>
+        <aside class={'music-badge' + (live ? ' is-playing' : '')} style={'--track-progress:' + frac * 100 + '%'} aria-label="Music controls" hidden={!vinyl || boot < 2 || !!modalSrc || gearOpen || paletteOpen}>
+          <button type="button" class="music-record" onClick={this.toggleMusicBadge} aria-expanded={musicOpen} aria-controls="music-options" aria-label="Vinyl player" title={musicOpen ? 'Hide player' : 'Show player'}>
             <span class="music-disc" aria-hidden="true" />
           </button>
           <div class="music-options" id="music-options" hidden={!musicOpen}>
             <div class="music-track">
-              <div><small>{playing ? 'Now playing' : 'Paused'}</small><strong>Soft Static</strong></div>
-              <span class="music-note">{note ?? '—'}</span>
+              <div><small>{(live ? 'Now playing' : 'Paused') + ' · Adele · 30 · vinyl'}</small><strong>{title}</strong></div>
+              <span class="music-note">{vinyl?.track}</span>
             </div>
             <div class="music-transport">
-              <button type="button" class="music-play" onClick={this.onToggle} aria-label={action}><PlaybackIcon playing={playing} /></button>
+              <button type="button" class="music-play" onClick={this.onPlayer} aria-label={playerAction}><PlaybackIcon playing={live} /></button>
               <div class="music-scrub">
-                <input type="range" class="music-seek" aria-label="Seek Soft Static" aria-valuetext={curLabel + ' of ' + durLabel} min={0} max={this.state.dur || 1} step="0.1" value={this.state.cur} disabled={!this.state.dur} onInput={this.onSeek} />
+                <input type="range" class="music-seek" aria-label={'Seek ' + title} aria-valuetext={curLabel + ' of ' + durLabel} min={0} max={dur || 1} step="0.1" value={cur} disabled={!dur} onInput={this.onSeek} />
                 <div class="music-time"><span>{curLabel}</span><span>{durLabel}</span></div>
               </div>
             </div>
             <div class="music-actions">
               <button type="button" onClick={this.onRestart}>Restart</button>
-              <button type="button" onClick={this.onMute}>{muted ? 'Unmute' : 'Mute'}</button>
+              <button type="button" onClick={this.onMute}>{vinyl?.muted ? 'Unmute' : 'Mute'}</button>
               <button type="button" onClick={this.goToTurntable}>Studio ↗</button>
             </div>
-            {musicError && <small role="status">{musicError}</small>}
           </div>
         </aside>
 

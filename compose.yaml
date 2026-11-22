@@ -1,0 +1,22 @@
+services:
+  vhost:
+    image: caddy:2-alpine
+    container_name: zhugez-vhost
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./.svelte-kit:/build:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  caddy-data:
+  caddy-config:

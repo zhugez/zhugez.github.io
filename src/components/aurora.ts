@@ -25,12 +25,17 @@ export function mountAurora(cv: HTMLCanvasElement, getHue: () => number, getPoin
   if (!gl) return () => {};
   const sh = (type: number, src: string) => { const o = gl.createShader(type)!; gl.shaderSource(o, src); gl.compileShader(o); return o; };
   const prog = gl.createProgram()!;
-  gl.attachShader(prog, sh(gl.VERTEX_SHADER, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}'));
-  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+  const vertex = sh(gl.VERTEX_SHADER, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}');
+  const fragment = sh(gl.FRAGMENT_SHADER, FS);
+  gl.attachShader(prog, vertex);
+  gl.attachShader(prog, fragment);
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return () => {};
+  gl.deleteShader(vertex);
+  gl.deleteShader(fragment);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { gl.deleteProgram(prog); return () => {}; }
   gl.useProgram(prog);
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const u = (n: string) => gl.getUniformLocation(prog, n);
@@ -78,5 +83,5 @@ export function mountAurora(cv: HTMLCanvasElement, getHue: () => number, getPoin
   document.addEventListener('visibilitychange', restartProbe);
   if (!still) raf = requestAnimationFrame(loop);
   cv.classList.add('on');
-  return () => { cancelAnimationFrame(raf); removeEventListener('resize', resize); document.removeEventListener('visibilitychange', restartProbe); };
+  return () => { cancelAnimationFrame(raf); removeEventListener('resize', resize); document.removeEventListener('visibilitychange', restartProbe); gl.deleteBuffer(buffer); gl.deleteProgram(prog); gl.getExtension('WEBGL_lose_context')?.loseContext(); };
 }

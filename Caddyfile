@@ -1,0 +1,15 @@
+{
+	admin off
+}
+
+lyngocvu.tech {
+	tls internal
+	root * /build/cloudflare
+	encode zstd gzip
+	file_server {
+		hide /build/cloudflare/_worker.js /build/cloudflare/_headers /build/cloudflare/.assetsignore
+	}
+	header X-Content-Type-Options nosniff
+	@immutable path /_app/immutable/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+}

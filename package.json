@@ -4,18 +4,27 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "vite dev",
+    "build": "node scripts/prepare-media.mjs && vite build",
+    "preview": "wrangler dev --ip 127.0.0.1 --port 4322",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "node scripts/check-range.mjs && node scripts/check-character.mjs && node scripts/check-collide.mjs && node scripts/check-lyrics.mjs && node scripts/check-piano.mjs && node scripts/check-lights.mjs && node scripts/check-hexword.mjs",
+    "test:e2e": "node scripts/check-profile.mjs && node scripts/check-works.mjs && node scripts/check-music.mjs && node scripts/check-game.mjs",
+    "deploy:check": "wrangler deploy --dry-run",
+    "prepare": "svelte-kit sync"
   },
   "dependencies": {
-    "@astrojs/preact": "^4.0.1",
-    "astro": "^5.1.1",
-    "preact": "^10.25.3",
     "three": "^0.187.0"
   },
   "devDependencies": {
-    "@types/three": "^0.187.0"
+    "@types/three": "^0.187.0",
+    "@sveltejs/adapter-cloudflare": "8.0.2",
+    "@sveltejs/kit": "3.2.0",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "svelte": "5.57.3",
+    "svelte-check": "4.7.8",
+    "typescript": "6.0.3",
+    "vite": "8.3.8",
+    "wrangler": "4.162.0"
   }
 }

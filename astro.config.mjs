@@ -3,7 +3,7 @@ import preact from '@astrojs/preact';
 
 // https://astro.build
 export default defineConfig({
-  site: 'https://zhugez.github.io',
+  site: 'https://lyngocvu.tech',
   integrations: [preact()],
   devToolbar: { enabled: false },
 });
